@@ -1,3 +1,5 @@
+'use strict';
+
 var MAP = document.querySelector('.map');
 var MAP_WIDTH = MAP.offsetWidth;
 var MAP_PINS = MAP.querySelector('.map__pins');
@@ -13,8 +15,9 @@ var POSITION_LIMIT = {
     MAX: 630
   }
 };
+
 var data = generateData(8);
-var pins = [];
+var pins = createPins(data);
 
 function getRandomInteger(min, max) {
   var rand = min - 0.5 + Math.random() * (max - min + 1);
@@ -57,33 +60,38 @@ function generateData(count) {
         x: getRandomInteger(POSITION_LIMIT.X.MIN, POSITION_LIMIT.X.MAX),
         y: getRandomInteger(POSITION_LIMIT.Y.MIN, POSITION_LIMIT.Y.MAX)
       }
-    }
+    };
     result.push(announcement);
   }
-  return result
+  return result;
 }
 
 function createPin(obj) {
   var pin = PIN_TEMPLATE.cloneNode(true);
   var pinImg = pin.querySelector('img');
-  pin.style = "left: " + obj.location.x + "px;" + "top: " + obj.location.y + "px;"
+  pin.style.left = obj.location.x + 'px';
+  pin.style.top = obj.location.y + 'px';
   // pin.style = "left: " + (1200 - 50) + "px;" + "top: 400px";
   pinImg.src = obj.author.avatar;
   pinImg.alt = 'заголовок объявления';
-  return pin
+  return pin;
 }
 
 function insertPins(arr) {
   var fragment = document.createDocumentFragment();
   for (var i = 0; i < arr.length; i++) {
     fragment.appendChild(arr[i]);
-  };
+  }
   MAP_PINS.appendChild(fragment);
 }
 
-activateMap();
-for (var i = 0; i < data.length; i++) {
-  pins.push(createPin(data[i]))
+function createPins(arr) {
+  var result = [];
+  for (var i = 0; i < arr.length; i++) {
+    result.push(createPin(arr[i]));
+  }
+  return result;
 }
 
+activateMap();
 insertPins(pins);
