@@ -1,14 +1,17 @@
 'use strict';
 
-var MAP = document.querySelector('.map');
-var MAP_WIDTH = MAP.offsetWidth;
-var MAP_PINS = MAP.querySelector('.map__pins');
-var PIN_TEMPLATE = document.querySelector('#pin').content.querySelector('.map__pin');
+var map = document.querySelector('.map');
+var mapWidth = map.offsetWidth;
+var mapFilters = map.querySelector('.map__filters');
+var pinMain = map.querySelector('.map__pin--main');
+var mapPins = map.querySelector('.map__pins');
+var pinTemplate = document.querySelector('#pin').content.querySelector('.map__pin');
 var typesOfSentences = ['palace', 'flat', 'house', 'bungalo'];
-var POSITION_LIMIT = {
+var adForm = document.querySelector('.ad-form');
+var positionLimit = {
   X: {
     MIN: 0,
-    MAX: MAP_WIDTH
+    MAX: mapWidth - 50 /* Временно отнимаю 50px (ширина пина) чтобы пин не выходил за рамки карты */
   },
   Y: {
     MIN: 130,
@@ -29,11 +32,24 @@ function getRandomElement(arr) {
 }
 
 function activateMap() {
-  MAP.classList.remove('map--faded');
+  map.classList.remove('map--faded');
 }
 
 function deactivateMap() {
-  MAP.classList.add('map--faded');
+  var adFormFieldsets = adForm.querySelectorAll('fieldset');
+  var mapFiltersFieldsets = mapFilters.querySelectorAll('fieldset');
+  var mapFiltersSelects = mapFilters.querySelectorAll('select');
+  map.classList.add('map--faded');
+  adForm.classList.add('ad-form--disabled');
+  for (var i=0; i<adFormFieldsets.length; i++) {
+    adFormFieldsets[i].setAttribute('disabled', 'disabled');
+  }
+  for (var i=0; i<mapFiltersFieldsets.length; i++) {
+    mapFiltersFieldsets[i].setAttribute('disabled', 'disabled');
+  }
+  for (var i=0; i<mapFiltersSelects.length; i++) {
+    mapFiltersSelects[i].setAttribute('disabled', 'disabled');
+  }
 }
 
 function addZeros(number, len) {
@@ -57,8 +73,8 @@ function generateData(count) {
         type: getRandomElement(typesOfSentences)
       },
       location: {
-        x: getRandomInteger(POSITION_LIMIT.X.MIN, POSITION_LIMIT.X.MAX),
-        y: getRandomInteger(POSITION_LIMIT.Y.MIN, POSITION_LIMIT.Y.MAX)
+        x: getRandomInteger(positionLimit.X.MIN, positionLimit.X.MAX),
+        y: getRandomInteger(positionLimit.Y.MIN, positionLimit.Y.MAX)
       }
     };
     result.push(announcement);
@@ -67,22 +83,13 @@ function generateData(count) {
 }
 
 function createPin(obj) {
-  var pin = PIN_TEMPLATE.cloneNode(true);
+  var pin = pinTemplate.cloneNode(true);
   var pinImg = pin.querySelector('img');
   pin.style.left = obj.location.x + 'px';
   pin.style.top = obj.location.y + 'px';
-  // pin.style = "left: " + (1200 - 50) + "px;" + "top: 400px";
   pinImg.src = obj.author.avatar;
   pinImg.alt = 'заголовок объявления';
   return pin;
-}
-
-function insertPins(arr) {
-  var fragment = document.createDocumentFragment();
-  for (var i = 0; i < arr.length; i++) {
-    fragment.appendChild(arr[i]);
-  }
-  MAP_PINS.appendChild(fragment);
 }
 
 function createPins(arr) {
@@ -93,5 +100,18 @@ function createPins(arr) {
   return result;
 }
 
-activateMap();
-insertPins(pins);
+function insertPins(arr) {
+  var fragment = document.createDocumentFragment();
+  for (var i = 0; i < arr.length; i++) {
+    fragment.appendChild(arr[i]);
+  }
+  mapPins.appendChild(fragment);
+}
+
+deactivateMap();
+
+pinMain.addEventListener('click', function(evt) {
+  evt.preventDefault();
+  activateMap();
+  insertPins(pins);
+})
