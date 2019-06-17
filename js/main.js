@@ -1,5 +1,4 @@
 var MAP = document.querySelector('.map');
-MAP.classList.remove('map--faded');
 var MAP_WIDTH = MAP.offsetWidth;
 var MAP_PINS = MAP.querySelector('.map__pins');
 var PIN_TEMPLATE = document.querySelector('#pin').content.querySelector('.map__pin');
@@ -14,10 +13,8 @@ var POSITION_LIMIT = {
     MAX: 630
   }
 };
-var similarAds = [];
-for (var i = 1; i <= 8; i++) {
-  similarAds.push(adGeneration(i))
-};
+var data = generateData(8);
+var pins = [];
 
 function getRandomInteger(min, max) {
   var rand = min - 0.5 + Math.random() * (max - min + 1);
@@ -28,42 +25,65 @@ function getRandomElement(arr) {
   return arr[getRandomInteger(0, arr.length - 1)];
 }
 
-function adGeneration(count) {
-  count = count < 10 ? '0' + count : count;
-  var announcement = {
-    author: {
-      avatar: 'img/avatars/user' + count +'.png'
-    },
-    offer: {
-      type: getRandomElement(typesOfSentences)
-    },
-    location: {
-      x: getRandomInteger(POSITION_LIMIT.X.MIN, POSITION_LIMIT.X.MAX),
-      y: getRandomInteger(POSITION_LIMIT.Y.MIN, POSITION_LIMIT.Y.MAX)
-    }
-  }
-  return announcement
+function activateMap() {
+  MAP.classList.remove('map--faded');
 }
 
-function renderPin(similar) {
+function deactivateMap() {
+  MAP.classList.add('map--faded');
+}
+
+function addZeros(number, len) {
+  var result = String(number);
+  if (String(number).length < len) {
+    for (var i = 0; i < len - String(number).length; i++) {
+      result = 0 + result;
+    }
+  }
+  return result;
+}
+
+function generateData(count) {
+  var result = [];
+  for (var i = 0; i < count; i++) {
+    var announcement = {
+      author: {
+        avatar: 'img/avatars/user' + addZeros(i + 1, 2) + '.png'
+      },
+      offer: {
+        type: getRandomElement(typesOfSentences)
+      },
+      location: {
+        x: getRandomInteger(POSITION_LIMIT.X.MIN, POSITION_LIMIT.X.MAX),
+        y: getRandomInteger(POSITION_LIMIT.Y.MIN, POSITION_LIMIT.Y.MAX)
+      }
+    }
+    result.push(announcement);
+  }
+  return result
+}
+
+function createPin(obj) {
   var pin = PIN_TEMPLATE.cloneNode(true);
-  var pinImg = PIN.querySelector('img');
-  pin.style = "left: " + similar.location.x + "px;" + "top: " + similar.location.y + "px;"
-  // pin.style = "left: " + (1200 - 25) + "px;" + "top: 400px"
-  pinImg.src = similar.author.avatar;
-  pinImg.alt = 'заголовок объявления'
+  var pinImg = pin.querySelector('img');
+  pin.style = "left: " + obj.location.x + "px;" + "top: " + obj.location.y + "px;"
+  // pin.style = "left: " + (1200 - 50) + "px;" + "top: 400px";
+  pinImg.src = obj.author.avatar;
+  pinImg.alt = 'заголовок объявления';
   return pin
 }
 
-function insertItems(arr, parent) {
+function insertPins(arr) {
   var fragment = document.createDocumentFragment();
   for (var i = 0; i < arr.length; i++) {
     fragment.appendChild(arr[i]);
   };
-  parent.appendChild(fragment);
+  MAP_PINS.appendChild(fragment);
 }
 
-insertItems('', MAP_PINS)
+activateMap();
+for (var i = 0; i < data.length; i++) {
+  pins.push(createPin(data[i]))
+}
 
-console.log(renderPin(similarAds[0]))
-console.log(similarAds);
+insertPins(pins);
