@@ -38,13 +38,13 @@ function getRandomElement(arr) {
   return arr[getRandomInteger(0, arr.length - 1)];
 }
 
-function enableAllItems(arr) {
+function enableItems(arr) {
   for (var i = 0; i < arr.length; i++) {
     arr[i].removeAttribute('disabled');
   }
 }
 
-function disableAllItems(arr) {
+function disableItems(arr) {
   for (var i = 0; i < arr.length; i++) {
     arr[i].setAttribute('disabled', 'disabled');
   }
@@ -54,7 +54,7 @@ function activateMap() {
   map.classList.remove('map--faded');
   adForm.classList.remove('ad-form--disabled');
   for (var i = 0; i < formElements.length; i++) {
-    enableAllItems(formElements[i]);
+    enableItems(formElements[i]);
   }
 }
 
@@ -62,7 +62,7 @@ function deactivateMap() {
   map.classList.add('map--faded');
   adForm.classList.add('ad-form--disabled');
   for (var i = 0; i < formElements.length; i++) {
-    disableAllItems(formElements[i]);
+    disableItems(formElements[i]);
   }
 }
 
@@ -123,7 +123,7 @@ function insertPins(arr) {
 }
 
 function setAddress(x, y) {
-  address.value = x + ', ' + y;
+  address.value = 'x = ' + x + ', ' + 'y = ' + y;
 }
 
 function onPinMainClick(evt) {
