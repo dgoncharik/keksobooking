@@ -20,6 +20,12 @@ var positionLimit = {
   }
 };
 
+var formElements = [ /* Элементы форм для включения/отключения при активации/деактивации карты. Структура - [[el, el...], [el, el...]...] */
+  adForm.querySelectorAll('fieldset'),
+  mapFilters.querySelectorAll('fieldset'),
+  mapFilters.querySelectorAll('select')
+];
+
 var data = generateData(8);
 var pins = createPins(data);
 
@@ -32,39 +38,31 @@ function getRandomElement(arr) {
   return arr[getRandomInteger(0, arr.length - 1)];
 }
 
+function enableAllItems(arr) {
+  for (var i = 0; i < arr.length; i++) {
+    arr[i].removeAttribute('disabled');
+  }
+}
+
+function disableAllItems(arr) {
+  for (var i = 0; i < arr.length; i++) {
+    arr[i].setAttribute('disabled', 'disabled');
+  }
+}
+
 function activateMap() {
-  var adFormFieldsets = adForm.querySelectorAll('fieldset');
-  var mapFiltersFieldsets = mapFilters.querySelectorAll('fieldset');
-  var mapFiltersSelects = mapFilters.querySelectorAll('select');
   map.classList.remove('map--faded');
   adForm.classList.remove('ad-form--disabled');
-  var i = 0;
-  for (i = 0; i < adFormFieldsets.length; i++) {
-    adFormFieldsets[i].removeAttribute('disabled');
-  }
-  for (i = 0; i < mapFiltersFieldsets.length; i++) {
-    mapFiltersFieldsets[i].removeAttribute('disabled');
-  }
-  for (i = 0; i < mapFiltersSelects.length; i++) {
-    mapFiltersSelects[i].removeAttribute('disabled');
+  for (var i = 0; i < formElements.length; i++) {
+    enableAllItems(formElements[i]);
   }
 }
 
 function deactivateMap() {
-  var adFormFieldsets = adForm.querySelectorAll('fieldset');
-  var mapFiltersFieldsets = mapFilters.querySelectorAll('fieldset');
-  var mapFiltersSelects = mapFilters.querySelectorAll('select');
   map.classList.add('map--faded');
   adForm.classList.add('ad-form--disabled');
-  var i = 0;
-  for (i = 0; i < adFormFieldsets.length; i++) {
-    adFormFieldsets[i].setAttribute('disabled', 'disabled');
-  }
-  for (i = 0; i < mapFiltersFieldsets.length; i++) {
-    mapFiltersFieldsets[i].setAttribute('disabled', 'disabled');
-  }
-  for (i = 0; i < mapFiltersSelects.length; i++) {
-    mapFiltersSelects[i].setAttribute('disabled', 'disabled');
+  for (var i = 0; i < formElements.length; i++) {
+    disableAllItems(formElements[i]);
   }
 }
 
