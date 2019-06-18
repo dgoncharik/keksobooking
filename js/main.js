@@ -8,6 +8,7 @@ var mapPins = map.querySelector('.map__pins');
 var pinTemplate = document.querySelector('#pin').content.querySelector('.map__pin');
 var typesOfSentences = ['palace', 'flat', 'house', 'bungalo'];
 var adForm = document.querySelector('.ad-form');
+var address = adForm.querySelector('#address');
 var positionLimit = {
   X: {
     MIN: 0,
@@ -32,7 +33,21 @@ function getRandomElement(arr) {
 }
 
 function activateMap() {
+  var adFormFieldsets = adForm.querySelectorAll('fieldset');
+  var mapFiltersFieldsets = mapFilters.querySelectorAll('fieldset');
+  var mapFiltersSelects = mapFilters.querySelectorAll('select');
   map.classList.remove('map--faded');
+  adForm.classList.remove('ad-form--disabled');
+  var i = 0;
+  for (i = 0; i < adFormFieldsets.length; i++) {
+    adFormFieldsets[i].removeAttribute('disabled');
+  }
+  for (i = 0; i < mapFiltersFieldsets.length; i++) {
+    mapFiltersFieldsets[i].removeAttribute('disabled');
+  }
+  for (i = 0; i < mapFiltersSelects.length; i++) {
+    mapFiltersSelects[i].removeAttribute('disabled');
+  }
 }
 
 function deactivateMap() {
@@ -41,13 +56,14 @@ function deactivateMap() {
   var mapFiltersSelects = mapFilters.querySelectorAll('select');
   map.classList.add('map--faded');
   adForm.classList.add('ad-form--disabled');
-  for (var i=0; i<adFormFieldsets.length; i++) {
+  var i = 0;
+  for (i = 0; i < adFormFieldsets.length; i++) {
     adFormFieldsets[i].setAttribute('disabled', 'disabled');
   }
-  for (var i=0; i<mapFiltersFieldsets.length; i++) {
+  for (i = 0; i < mapFiltersFieldsets.length; i++) {
     mapFiltersFieldsets[i].setAttribute('disabled', 'disabled');
   }
-  for (var i=0; i<mapFiltersSelects.length; i++) {
+  for (i = 0; i < mapFiltersSelects.length; i++) {
     mapFiltersSelects[i].setAttribute('disabled', 'disabled');
   }
 }
@@ -108,10 +124,16 @@ function insertPins(arr) {
   mapPins.appendChild(fragment);
 }
 
-deactivateMap();
+function setAddress(x, y) {
+  address.value = x + ', ' + y;
+}
 
-pinMain.addEventListener('click', function(evt) {
+function onPinMainClick(evt) {
   evt.preventDefault();
   activateMap();
   insertPins(pins);
-})
+}
+
+deactivateMap();
+setAddress(pinMain.offsetLeft, pinMain.offsetTop);
+pinMain.addEventListener('click', onPinMainClick);
