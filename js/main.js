@@ -10,13 +10,13 @@ var typesOfSentences = ['palace', 'flat', 'house', 'bungalo'];
 var adForm = document.querySelector('.ad-form');
 var address = adForm.querySelector('#address');
 var positionLimit = {
-  X: {
-    MIN: 0,
-    MAX: mapWidth - 50 /* Временно отнимаю 50px (ширина пина) чтобы пин не выходил за рамки карты */
+  x: {
+    min: 0,
+    max: mapWidth - 50 /* Временно отнимаю 50px (ширина пина) чтобы пин не выходил за рамки карты */
   },
-  Y: {
-    MIN: 130,
-    MAX: 630
+  y: {
+    min: 130,
+    max: 630
   }
 };
 
@@ -66,6 +66,8 @@ function deactivateMap() {
   }
 }
 
+// TODO написать функцию деактивации формы. Принимает форму, находит на ней все элементы, добавляет атрибудт disabled на них
+
 function addZeros(number, len) {
   var result = String(number);
   if (String(number).length < len) {
@@ -87,8 +89,8 @@ function generateData(count) {
         type: getRandomElement(typesOfSentences)
       },
       location: {
-        x: getRandomInteger(positionLimit.X.MIN, positionLimit.X.MAX),
-        y: getRandomInteger(positionLimit.Y.MIN, positionLimit.Y.MAX)
+        x: getRandomInteger(positionLimit.x.min, positionLimit.x.max),
+        y: getRandomInteger(positionLimit.y.min, positionLimit.y.max)
       }
     };
     result.push(announcement);
