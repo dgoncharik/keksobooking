@@ -19,12 +19,8 @@ var positionLimit = {
     max: 630
   }
 };
-
-var formElements = [ /* Элементы форм для включения/отключения при активации/деактивации карты. Структура - [[el, el...], [el, el...]...] */
-  adForm.querySelectorAll('fieldset'),
-  mapFilters.querySelectorAll('fieldset'),
-  mapFilters.querySelectorAll('select')
-];
+// Элементы форм для включения/отключения при активации/деактивации карты.
+var formElements = ['fieldset', 'input', 'select'];
 
 var data = generateData(8);
 var pins = createPins(data);
@@ -52,21 +48,35 @@ function disableItems(arr) {
 
 function activateMap() {
   map.classList.remove('map--faded');
-  adForm.classList.remove('ad-form--disabled');
-  for (var i = 0; i < formElements.length; i++) {
-    enableItems(formElements[i]);
-  }
+  activateForm(adForm, 'ad-form--disabled');
+  activateForm(mapFilters);
 }
 
 function deactivateMap() {
   map.classList.add('map--faded');
-  adForm.classList.add('ad-form--disabled');
+  deactivateForm(adForm, 'ad-form--disabled');
+  deactivateForm(mapFilters);
+}
+
+function activateForm(form, htmlClassDisabled) {
   for (var i = 0; i < formElements.length; i++) {
-    disableItems(formElements[i]);
+    var currentItems = form.querySelectorAll(formElements[i]);
+    enableItems(currentItems);
+  }
+  if (htmlClassDisabled) {
+    form.classList.remove(htmlClassDisabled);
   }
 }
 
-// TODO написать функцию деактивации формы. Принимает форму, находит на ней все элементы, добавляет атрибудт disabled на них
+function deactivateForm(form, htmlClassDisabled) {
+  for (var i = 0; i < formElements.length; i++) {
+    var currentItems = form.querySelectorAll(formElements[i]);
+    disableItems(currentItems);
+  }
+  if (htmlClassDisabled) {
+    form.classList.add(htmlClassDisabled);
+  }
+}
 
 function addZeros(number, len) {
   var result = String(number);
