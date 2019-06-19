@@ -19,8 +19,6 @@ var positionLimit = {
     max: 630
   }
 };
-// Элементы форм для включения/отключения при активации/деактивации карты.
-var formElements = ['fieldset', 'input', 'select'];
 
 var data = generateData(8);
 var pins = createPins(data);
@@ -32,18 +30,6 @@ function getRandomInteger(min, max) {
 
 function getRandomElement(arr) {
   return arr[getRandomInteger(0, arr.length - 1)];
-}
-
-function enableItems(arr) {
-  for (var i = 0; i < arr.length; i++) {
-    arr[i].removeAttribute('disabled');
-  }
-}
-
-function disableItems(arr) {
-  for (var i = 0; i < arr.length; i++) {
-    arr[i].setAttribute('disabled', 'disabled');
-  }
 }
 
 function activateMap() {
@@ -59,9 +45,9 @@ function deactivateMap() {
 }
 
 function activateForm(form, htmlClassDisabled) {
+  var formElements = form.querySelectorAll(['input', 'select', 'fieldset']);
   for (var i = 0; i < formElements.length; i++) {
-    var currentItems = form.querySelectorAll(formElements[i]);
-    enableItems(currentItems);
+    formElements[i].removeAttribute('disabled');
   }
   if (htmlClassDisabled) {
     form.classList.remove(htmlClassDisabled);
@@ -69,9 +55,9 @@ function activateForm(form, htmlClassDisabled) {
 }
 
 function deactivateForm(form, htmlClassDisabled) {
+  var formElements = form.querySelectorAll(['input', 'select', 'fieldset']);
   for (var i = 0; i < formElements.length; i++) {
-    var currentItems = form.querySelectorAll(formElements[i]);
-    disableItems(currentItems);
+    formElements[i].setAttribute('disabled', 'disabled');
   }
   if (htmlClassDisabled) {
     form.classList.add(htmlClassDisabled);
@@ -134,16 +120,25 @@ function insertPins(arr) {
   mapPins.appendChild(fragment);
 }
 
+function getCoordinates(elem) {
+  var left = elem.offsetLeft + elem.offsetWidth / 2;
+  var top = elem.offsetTop + elem.offsetHeight / 2;
+  return {x: left, y: top};
+}
+
 function setAddress(x, y) {
   address.value = 'x = ' + x + ', ' + 'y = ' + y;
 }
 
-function onPinMainClick(evt) {
-  evt.preventDefault();
+function onPinMainClick() {
   activateMap();
   insertPins(pins);
 }
 
 deactivateMap();
-setAddress(pinMain.offsetLeft, pinMain.offsetTop);
-pinMain.addEventListener('click', onPinMainClick);
+setAddress(getCoordinates(pinMain).x, getCoordinates(pinMain).y);
+
+pinMain.addEventListener('click', function(evt) {
+  evt.preventDefault();
+  onPinMainClick()
+});
