@@ -9,6 +9,8 @@ var pinTemplate = document.querySelector('#pin').content.querySelector('.map__pi
 var typesOfSentences = ['palace', 'flat', 'house', 'bungalo'];
 var adForm = document.querySelector('.ad-form');
 var address = adForm.querySelector('#address');
+var price = adForm.querySelector('#price');
+var typeOfHousing = adForm.querySelector('#type');
 var positionLimit = {
   x: {
     min: 0,
@@ -45,7 +47,7 @@ function deactivateMap() {
 }
 
 function activateForm(form, htmlClassDisabled) {
-  var formElements = form.querySelectorAll(['input', 'select', 'fieldset']);
+  var formElements = form.querySelectorAll(['input', 'select', 'textarea', 'button']);
   for (var i = 0; i < formElements.length; i++) {
     formElements[i].removeAttribute('disabled');
   }
@@ -54,8 +56,8 @@ function activateForm(form, htmlClassDisabled) {
   }
 }
 
-function deactivateForm(form, htmlClassDisabled) {
-  var formElements = form.querySelectorAll(['input', 'select', 'fieldset']);
+function deactivateForm(form,  htmlClassDisabled) {
+  var formElements = form.querySelectorAll(['input', 'select', 'textarea', 'button']);
   for (var i = 0; i < formElements.length; i++) {
     formElements[i].setAttribute('disabled', 'disabled');
   }
@@ -127,12 +129,23 @@ function getCoordinates(elem) {
 }
 
 function setAddress(x, y) {
-  address.value = 'x = ' + x + ', ' + 'y = ' + y;
+  address.value = x + ', ' + y;
 }
 
-function onPinMainClick() {
+function setMinPrice(value) {
+  price.min = value;
+  price.placeholder = value;
+}
+
+function onPinMainClick(evt) {
   activateMap();
   insertPins(pins);
+}
+
+function onTypeOfHousingClick(evt) {
+  var options = typeOfHousing.options;
+  var currentOption = options[options.selectedIndex];
+  setMinPrice(currentOption.dataset.minPrice);
 }
 
 deactivateMap();
@@ -140,5 +153,34 @@ setAddress(getCoordinates(pinMain).x, getCoordinates(pinMain).y);
 
 pinMain.addEventListener('click', function(evt) {
   evt.preventDefault();
-  onPinMainClick()
+  onPinMainClick(evt);
 });
+
+typeOfHousing.addEventListener('change', function(evt) {
+  onTypeOfHousingClick(evt);
+})
+
+// ===========
+
+var timeIn = adForm.querySelector('#timein');
+var timeOut = adForm.querySelector('#timeout');
+
+function setValueSelect(select, value) {
+  select.value = value;
+}
+
+function onChangeTimeIn(evt) {
+  setValueSelect(timeOut, timeIn.value);
+}
+
+function onChangeTimeOut(evt) {
+  setValueSelect(timeIn, timeOut.value);
+}
+
+timeIn.addEventListener('change', function(evt) {
+  onChangeTimeIn();
+})
+
+timeOut.addEventListener('change', function(evt) {
+  onChangeTimeOut();
+})
