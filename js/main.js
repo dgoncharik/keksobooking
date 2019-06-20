@@ -11,6 +11,8 @@ var adForm = document.querySelector('.ad-form');
 var address = adForm.querySelector('#address');
 var price = adForm.querySelector('#price');
 var typeOfHousing = adForm.querySelector('#type');
+var timeIn = adForm.querySelector('#timein');
+var timeOut = adForm.querySelector('#timeout');
 var positionLimit = {
   x: {
     min: 0,
@@ -41,7 +43,9 @@ function activateMap() {
 }
 
 function deactivateMap() {
+  var coordinatesPinMain = getCoordinates(pinMain);
   map.classList.add('map--faded');
+  setAddress(coordinatesPinMain.x, coordinatesPinMain.y);
   deactivateForm(adForm, 'ad-form--disabled');
   deactivateForm(mapFilters);
 }
@@ -59,7 +63,7 @@ function activateForm(form, htmlClassDisabled) {
 function deactivateForm(form,  htmlClassDisabled) {
   var formElements = form.querySelectorAll(['input', 'select', 'textarea', 'button']);
   for (var i = 0; i < formElements.length; i++) {
-    formElements[i].setAttribute('disabled', 'disabled');
+    formElements[i].disabled = true;
   }
   if (htmlClassDisabled) {
     form.classList.add(htmlClassDisabled);
@@ -123,9 +127,10 @@ function insertPins(arr) {
 }
 
 function getCoordinates(elem) {
-  var left = elem.offsetLeft + elem.offsetWidth / 2;
-  var top = elem.offsetTop + elem.offsetHeight / 2;
-  return {x: left, y: top};
+  return {
+    x: elem.offsetLeft + elem.offsetWidth / 2,
+    y: elem.offsetTop + elem.offsetHeight / 2
+  }
 }
 
 function setAddress(x, y) {
@@ -137,7 +142,11 @@ function setMinPrice(value) {
   price.placeholder = value;
 }
 
-function onPinMainClick(evt) {
+function setValueField(field, value) {
+  field.value = value;
+}
+
+function onPinMainMouseup(evt) {
   activateMap();
   insertPins(pins);
 }
@@ -148,34 +157,22 @@ function onTypeOfHousingClick(evt) {
   setMinPrice(currentOption.dataset.minPrice);
 }
 
-deactivateMap();
-setAddress(getCoordinates(pinMain).x, getCoordinates(pinMain).y);
+function onChangeTimeIn(evt) {
+  setValueField(timeOut, timeIn.value);
+}
 
-pinMain.addEventListener('click', function(evt) {
+function onChangeTimeOut(evt) {
+  setValueField(timeIn, timeOut.value);
+}
+
+pinMain.addEventListener('mouseup', function(evt) {
   evt.preventDefault();
-  onPinMainClick(evt);
-});
+  onPinMainMouseup(evt);
+})
 
 typeOfHousing.addEventListener('change', function(evt) {
   onTypeOfHousingClick(evt);
 })
-
-// ===========
-
-var timeIn = adForm.querySelector('#timein');
-var timeOut = adForm.querySelector('#timeout');
-
-function setValueSelect(select, value) {
-  select.value = value;
-}
-
-function onChangeTimeIn(evt) {
-  setValueSelect(timeOut, timeIn.value);
-}
-
-function onChangeTimeOut(evt) {
-  setValueSelect(timeIn, timeOut.value);
-}
 
 timeIn.addEventListener('change', function(evt) {
   onChangeTimeIn();
@@ -184,3 +181,5 @@ timeIn.addEventListener('change', function(evt) {
 timeOut.addEventListener('change', function(evt) {
   onChangeTimeOut();
 })
+
+deactivateMap();
