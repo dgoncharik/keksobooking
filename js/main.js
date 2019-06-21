@@ -157,11 +157,11 @@ function onTypeOfHousingClick(evt) {
   setMinPrice(currentOption.dataset.minPrice);
 }
 
-function onChangeTimeIn(evt) {
+function onTimeInChange(evt) {
   setValueField(timeOut, timeIn.value);
 }
 
-function onChangeTimeOut(evt) {
+function onTimeOutChange(evt) {
   setValueField(timeIn, timeOut.value);
 }
 
@@ -175,11 +175,79 @@ typeOfHousing.addEventListener('change', function(evt) {
 })
 
 timeIn.addEventListener('change', function(evt) {
-  onChangeTimeIn();
+  onTimeInChange();
 })
 
 timeOut.addEventListener('change', function(evt) {
-  onChangeTimeOut();
+  onTimeOutChange();
 })
 
 deactivateMap();
+
+
+// ==========================================
+
+pinMain.addEventListener('mousedown', function(downEvt) {
+  downEvt.preventDefault();
+
+  var positionLimit = {
+    x: {
+      min: 0,
+      max: map.offsetWidth - pinMain.offsetWidth
+    },
+    y: {
+      min: 130,
+      max: 630
+    }
+  }
+
+  var startCoords = {
+    x: downEvt.clientX,
+    y: downEvt.clientY
+  }
+
+  function checkPosition(checkedX, checkedY) {
+    checkedX = checkedX <= positionLimit.x.min ? positionLimit.x.min : checkedX;
+    checkedY = checkedY <= positionLimit.y.min ? positionLimit.y.min : checkedY;
+    checkedX = checkedX >= positionLimit.x.max ? positionLimit.x.max : checkedX;
+    checkedY = checkedY >= positionLimit.y.max ? positionLimit.y.max : checkedY;
+
+    return {x: checkedX, y: checkedY};
+  }
+
+  function onMouseMove(moveEvt) {
+    moveEvt.preventDefault();
+
+    var shift = {
+      x: startCoords.x - moveEvt.clientX,
+      y: startCoords.y - moveEvt.clientY
+    }
+
+    startCoords = {
+      x: moveEvt.clientX,
+      y: moveEvt.clientY
+    }
+
+    var newPosition = {
+      x: pinMain.offsetLeft - shift.x,
+      y: pinMain.offsetTop - shift.y
+    }
+
+    newPosition.x = newPosition.x <= positionLimit.x.min ? positionLimit.x.min : newPosition.x;
+    newPosition.y = newPosition.y <= positionLimit.y.min ? positionLimit.y.min : newPosition.y;
+    newPosition.x = newPosition.x >= positionLimit.x.max ? positionLimit.x.max : newPosition.x;
+    newPosition.y = newPosition.y >= positionLimit.y.max ? positionLimit.y.max : newPosition.y;
+
+    pinMain.style.left = newPosition.x + 'px';
+    pinMain.style.top = newPosition.y + 'px';
+  }
+
+  function onMouseUp(upEvt) {
+    upEvt.preventDefault();
+    document.removeEventListener('mousemove', onMouseMove);
+    document.removeEventListener('mouseup', onMouseUp);
+  }
+
+  document.addEventListener('mousemove', onMouseMove);
+  document.addEventListener('mouseup', onMouseUp);
+})
