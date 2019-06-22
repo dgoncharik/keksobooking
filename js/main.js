@@ -203,8 +203,8 @@ pinMain.addEventListener('mousedown', function(downEvt) {
         max: map.offsetWidth - pinMain.offsetWidth / 2
       },
       y: {
-        min: 130,
-        max: 630
+        min: 130 - pinMain.offsetHeight,
+        max: 630 - pinMain.offsetHeight
       }
     }
     checkedX = checkedX <= limit.x.min ? limit.x.min : checkedX;
