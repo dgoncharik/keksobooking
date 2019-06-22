@@ -43,7 +43,7 @@ function activateMap() {
 }
 
 function deactivateMap() {
-  var coordinatesPinMain = getCoordinates(pinMain);
+  var coordinatesPinMain = getCoordinates();
   map.classList.add('map--faded');
   setAddress(coordinatesPinMain.x, coordinatesPinMain.y);
   deactivateForm(adForm, 'ad-form--disabled');
@@ -126,10 +126,10 @@ function insertPins(arr) {
   mapPins.appendChild(fragment);
 }
 
-function getCoordinates(elem) {
+function getCoordinates() {
   return {
-    x: elem.offsetLeft + elem.offsetWidth / 2,
-    y: elem.offsetTop + elem.offsetHeight / 2
+    x: pinMain.offsetLeft + pinMain.offsetWidth / 2,
+    y: pinMain.offsetTop + pinMain.offsetHeight /* /2 */
   }
 }
 
@@ -189,28 +189,28 @@ deactivateMap();
 
 pinMain.addEventListener('mousedown', function(downEvt) {
   downEvt.preventDefault();
-
-  var positionLimit = {
-    x: {
-      min: 0,
-      max: map.offsetWidth - pinMain.offsetWidth
-    },
-    y: {
-      min: 130,
-      max: 630
-    }
-  }
+  pinMain.style.zIndex = '1000';
 
   var startCoords = {
     x: downEvt.clientX,
     y: downEvt.clientY
   }
 
-  function checkPosition(checkedX, checkedY) {
-    checkedX = checkedX <= positionLimit.x.min ? positionLimit.x.min : checkedX;
-    checkedY = checkedY <= positionLimit.y.min ? positionLimit.y.min : checkedY;
-    checkedX = checkedX >= positionLimit.x.max ? positionLimit.x.max : checkedX;
-    checkedY = checkedY >= positionLimit.y.max ? positionLimit.y.max : checkedY;
+  function checkLimitPosition(checkedX, checkedY) {
+    var limit = {
+      x: {
+        min: - pinMain.offsetWidth / 2,
+        max: map.offsetWidth - pinMain.offsetWidth / 2
+      },
+      y: {
+        min: 130,
+        max: 630
+      }
+    }
+    checkedX = checkedX <= limit.x.min ? limit.x.min : checkedX;
+    checkedY = checkedY <= limit.y.min ? limit.y.min : checkedY;
+    checkedX = checkedX >= limit.x.max ? limit.x.max : checkedX;
+    checkedY = checkedY >= limit.y.max ? limit.y.max : checkedY;
 
     return {x: checkedX, y: checkedY};
   }
@@ -228,22 +228,16 @@ pinMain.addEventListener('mousedown', function(downEvt) {
       y: moveEvt.clientY
     }
 
-    var newPosition = {
-      x: pinMain.offsetLeft - shift.x,
-      y: pinMain.offsetTop - shift.y
-    }
-
-    newPosition.x = newPosition.x <= positionLimit.x.min ? positionLimit.x.min : newPosition.x;
-    newPosition.y = newPosition.y <= positionLimit.y.min ? positionLimit.y.min : newPosition.y;
-    newPosition.x = newPosition.x >= positionLimit.x.max ? positionLimit.x.max : newPosition.x;
-    newPosition.y = newPosition.y >= positionLimit.y.max ? positionLimit.y.max : newPosition.y;
+    var newPosition = checkLimitPosition(pinMain.offsetLeft - shift.x, pinMain.offsetTop - shift.y);
 
     pinMain.style.left = newPosition.x + 'px';
     pinMain.style.top = newPosition.y + 'px';
+    setAddress(getCoordinates().x, getCoordinates().y);
   }
 
   function onMouseUp(upEvt) {
     upEvt.preventDefault();
+    setAddress(getCoordinates().x, getCoordinates().y);
     document.removeEventListener('mousemove', onMouseMove);
     document.removeEventListener('mouseup', onMouseUp);
   }
