@@ -3,37 +3,41 @@
 
 (function() {
   var adForm = document.querySelector('.ad-form');
-  var address = adForm.querySelector('#address');
-  var price = adForm.querySelector('#price');
-  var typeOfHousing = adForm.querySelector('#type');
-  var timeIn = adForm.querySelector('#timein');
-  var timeOut = adForm.querySelector('#timeout');
+  var addressElement = adForm.querySelector('#address');
+  var priceElement = adForm.querySelector('#price');
+  var housTypeElement = adForm.querySelector('#type');
+  var timeInElement = adForm.querySelector('#timein');
+  var timeOutElement = adForm.querySelector('#timeout');
   var FORM_ELEMENTS = ['input', 'select', 'textarea', 'button'];
+  var minPrices = {
+    bungalo: 0,
+    flat: 1000,
+    house: 5000,
+    palace: 10000
+  };
 
-  function onTypeOfHousingClick() {
-    var options = typeOfHousing.options;
-    var currentOption = options[options.selectedIndex];
-    window.form.setMinPrice(currentOption.dataset.minPrice);
+  function onHousTypeElementClick(evt) {
+    window.form.setMinPrice(minPrices[evt.target.value]);
   }
 
-  function onTimeInChange() {
-    window.form.setValueField(timeOut, timeIn.value);
+  function onTimeInElementChange() {
+    window.form.setValueField(timeOutElement, timeInElement.value);
   }
 
-  function onTimeOutChange() {
-    window.form.setValueField(timeIn, timeOut.value);
+  function onTimeOutElementChange() {
+    window.form.setValueField(timeInElement, timeOutElement.value);
   }
 
-  typeOfHousing.addEventListener('change', function() {
-    onTypeOfHousingClick();
+  housTypeElement.addEventListener('change', function(evt) {
+    onHousTypeElementClick(evt);
   })
 
-  timeIn.addEventListener('change', function() {
-    onTimeInChange();
+  timeInElement.addEventListener('change', function() {
+    onTimeInElementChange();
   })
 
-  timeOut.addEventListener('change', function() {
-    onTimeOutChange();
+  timeOutElement.addEventListener('change', function() {
+    onTimeOutElementChange();
   })
 
   window.form = {
@@ -58,12 +62,12 @@
     },
 
     setAddress: function(x, y) {
-      address.value = x + ', ' + y;
+      addressElement.value = x + ', ' + y;
     },
 
     setMinPrice: function(value) {
-      price.min = value;
-      price.placeholder = value;
+      priceElement.min = value;
+      priceElement.placeholder = value;
     },
 
     setValueField: function(field, value) {
