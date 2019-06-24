@@ -6,11 +6,11 @@
   var positionLimit = {
     x: {
       min: 0,
-      max: map.offsetWidth - window.pin.getPinSize().WIDTH
+      max: map.offsetWidth - 50
     },
     y: {
-      min: 130 - window.pin.getPinSize().HEIGHT,
-      max: 630 - window.pin.getPinSize().HEIGHT
+      min: 130 - 70,
+      max: 630 - 70
     }
   };
 
