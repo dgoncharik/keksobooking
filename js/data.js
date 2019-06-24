@@ -6,11 +6,11 @@
   var positionLimit = {
     x: {
       min: 0,
-      max: map.offsetWidth - 50 /* Временно отнимаю 50px (ширина пина) чтобы пин не выходил за рамки карты */
+      max: map.offsetWidth - window.pin.getPinSize().WIDTH
     },
     y: {
-      min: 130,
-      max: 630
+      min: 130 - window.pin.getPinSize().HEIGHT,
+      max: 630 - window.pin.getPinSize().HEIGHT
     }
   };
 

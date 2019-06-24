@@ -2,11 +2,13 @@
 
 (function() {
   var map = document.querySelector('.map');
-  var pinM = map.querySelector('.map__pin--main');
+  var pinElement = map.querySelector('.map__pin--main');
+  var MAIN_PIN_WIDTH = pinElement.offsetWidth;
+  var MAIN_PIN_HEIGHT = pinElement.offsetHeight;
 
-  pinM.addEventListener('mousedown', function(downEvt) {
+  pinElement.addEventListener('mousedown', function(downEvt) {
     downEvt.preventDefault();
-    pinM.style.zIndex = '1000';
+    pinElement.style.zIndex = '1000';
 
     var startCoords = {
       x: downEvt.clientX,
@@ -16,12 +18,12 @@
     function checkLimitPosition(checkedX, checkedY) {
       var limit = {
         x: {
-          min: - pinM.offsetWidth / 2,
-          max: map.offsetWidth - pinM.offsetWidth / 2
+          min: window.map.getMapBoundares().LEFT - MAIN_PIN_WIDTH / 2,
+          max: window.map.getMapBoundares().RIGHT - MAIN_PIN_WIDTH / 2
         },
         y: {
-          min: 130 - pinM.offsetHeight,
-          max: 630 - pinM.offsetHeight
+          min: window.map.getMapBoundares().TOP - MAIN_PIN_HEIGHT,
+          max: window.map.getMapBoundares().BOTTOM - MAIN_PIN_HEIGHT
         }
       };
       checkedX = checkedX <= limit.x.min ? limit.x.min : checkedX;
@@ -45,10 +47,10 @@
         y: moveEvt.clientY
       };
 
-      var newPosition = checkLimitPosition(pinM.offsetLeft - shift.x, pinM.offsetTop - shift.y);
+      var newPosition = checkLimitPosition(pinElement.offsetLeft - shift.x, pinElement.offsetTop - shift.y);
 
-      pinM.style.left = newPosition.x + 'px';
-      pinM.style.top = newPosition.y + 'px';
+      pinElement.style.left = newPosition.x + 'px';
+      pinElement.style.top = newPosition.y + 'px';
       window.form.setAddress(window.mainPin.getCoordinates().x, window.mainPin.getCoordinates().y);
     }
 
@@ -69,8 +71,8 @@
   window.mainPin = {
     getCoordinates: function() {
       return {
-        x: pinM.offsetLeft + pinM.offsetWidth / 2,
-        y: pinM.offsetTop + pinM.offsetHeight /* /2 */
+        x: pinElement.offsetLeft + pinElement.offsetWidth / 2,
+        y: pinElement.offsetTop + pinElement.offsetHeight /* /2 */
       }
     }
   }
