@@ -30,15 +30,15 @@
 
   housTypeElement.addEventListener('change', function(evt) {
     onHousTypeElementClick(evt);
-  })
+  });
 
   timeInElement.addEventListener('change', function() {
     onTimeInElementChange();
-  })
+  });
 
   timeOutElement.addEventListener('change', function() {
     onTimeOutElementChange();
-  })
+  });
 
   window.form = {
     activateForm: function(form, htmlClassDisabled) {
@@ -73,6 +73,5 @@
     setValueField: function(field, value) {
       field.value = value;
     }
-  }
+  };
 })()
-

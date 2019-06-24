@@ -11,7 +11,7 @@
     var startCoords = {
       x: downEvt.clientX,
       y: downEvt.clientY
-    }
+    };
 
     function checkLimitPosition(checkedX, checkedY) {
       var limit = {
@@ -23,7 +23,7 @@
           min: 130 - pinM.offsetHeight,
           max: 630 - pinM.offsetHeight
         }
-      }
+      };
       checkedX = checkedX <= limit.x.min ? limit.x.min : checkedX;
       checkedY = checkedY <= limit.y.min ? limit.y.min : checkedY;
       checkedX = checkedX >= limit.x.max ? limit.x.max : checkedX;
@@ -38,12 +38,12 @@
       var shift = {
         x: startCoords.x - moveEvt.clientX,
         y: startCoords.y - moveEvt.clientY
-      }
+      };
 
       startCoords = {
         x: moveEvt.clientX,
         y: moveEvt.clientY
-      }
+      };
 
       var newPosition = checkLimitPosition(pinM.offsetLeft - shift.x, pinM.offsetTop - shift.y);
 
