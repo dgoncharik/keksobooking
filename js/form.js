@@ -8,13 +8,41 @@
   var housTypeElement = adForm.querySelector('#type');
   var timeInElement = adForm.querySelector('#timein');
   var timeOutElement = adForm.querySelector('#timeout');
-  var FORM_ELEMENTS = ['input', 'select', 'textarea', 'button'];
+  var formElements = adForm.querySelectorAll(['input', 'select', 'textarea', 'button']);
+  var htmlClassDisabled = 'ad-form--disabled';
   var minPrices = {
     bungalo: 0,
     flat: 1000,
     house: 5000,
     palace: 10000
   };
+
+  function enableForm() {
+    for (var i = 0; i < formElements.length; i++) {
+      formElements[i].removeAttribute('disabled');
+    }
+    adForm.classList.remove(htmlClassDisabled);
+  }
+
+  function disableForm() {
+    for (var i = 0; i < formElements.length; i++) {
+      formElements[i].disabled = true;
+    }
+    adForm.classList.add(htmlClassDisabled);
+  }
+
+  function setAddress(coord) { /* coord = {x: value, y: value} */
+    addressElement.value = coord.x + ', ' + coord.y;
+  }
+
+  function setMinPrice(value) {
+    priceElement.min = value;
+    priceElement.placeholder = value;
+  }
+
+  function setValueField(field, value) {
+    field.value = value;
+  }
 
   function onHousTypeElementClick(evt) {
     window.form.setMinPrice(minPrices[evt.target.value]);
@@ -41,37 +69,8 @@
   });
 
   window.form = {
-    activateForm: function(form, htmlClassDisabled) {
-      var elements = form.querySelectorAll(FORM_ELEMENTS);
-      for (var i = 0; i < elements.length; i++) {
-        elements[i].removeAttribute('disabled');
-      }
-      if (htmlClassDisabled) {
-        form.classList.remove(htmlClassDisabled);
-      }
-    },
-
-    deactivateForm: function(form,  htmlClassDisabled) {
-      var elements = form.querySelectorAll(FORM_ELEMENTS);
-      for (var i = 0; i < elements.length; i++) {
-        elements[i].disabled = true;
-      }
-      if (htmlClassDisabled) {
-        form.classList.add(htmlClassDisabled);
-      }
-    },
-
-    setAddress: function(x, y) {
-      addressElement.value = x + ', ' + y;
-    },
-
-    setMinPrice: function(value) {
-      priceElement.min = value;
-      priceElement.placeholder = value;
-    },
-
-    setValueField: function(field, value) {
-      field.value = value;
-    }
+    enable: enableForm,
+    disable: disableForm,
+    setAddress: setAddress
   };
-})()
+}())

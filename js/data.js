@@ -2,37 +2,41 @@
 
 (function() {
   var map = document.querySelector('.map');
-  var typesOfSentences = ['palace', 'flat', 'house', 'bungalo'];
+  var housingTypes = ['palace', 'flat', 'house', 'bungalo'];
+  var PIN_WIDTH = 50;
+  var PIN_HEIGHT = 70;
   var positionLimit = {
     x: {
       min: 0,
-      max: map.offsetWidth - 50
+      max: map.offsetWidth - PIN_WIDTH
     },
     y: {
-      min: 130 - 70,
-      max: 630 - 70
+      min: 130 - PIN_HEIGHT,
+      max: 630 - PIN_HEIGHT
     }
   };
 
-  window.data = {
-    generateData: function(count) {
-      var result = [];
-      for (var i = 0; i < count; i++) {
-        var announcement = {
-          author: {
-            avatar: 'img/avatars/user' + window.utils.addZeros(i + 1, 2) + '.png'
-          },
-          offer: {
-            type: window.utils.getRandomElement(typesOfSentences)
-          },
-          location: {
-            x: window.utils.getRandomInteger(positionLimit.x.min, positionLimit.x.max),
-            y: window.utils.getRandomInteger(positionLimit.y.min, positionLimit.y.max)
-          }
-        };
-        result.push(announcement);
-      }
-      return result;
+  function generateData(count) {
+    var result = [];
+    for (var i = 0; i < count; i++) {
+      var announcement = {
+        author: {
+          avatar: 'img/avatars/user' + window.utils.addZeros(i + 1, 2) + '.png'
+        },
+        offer: {
+          type: window.utils.getRandomElement(housingTypes)
+        },
+        location: {
+          x: window.utils.getRandomInteger(positionLimit.x.min, positionLimit.x.max),
+          y: window.utils.getRandomInteger(positionLimit.y.min, positionLimit.y.max)
+        }
+      };
+      result.push(announcement);
     }
+    return result;
   }
-})()
+
+  window.data = {
+    generateData: generateData
+  }
+}())

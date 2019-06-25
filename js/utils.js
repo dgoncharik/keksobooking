@@ -25,4 +25,4 @@
     getRandomElement: getRandomElement,
     addZeros: addZeros
   }
-})()
+}())
