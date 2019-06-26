@@ -4,9 +4,9 @@
   var map = document.querySelector('.map');
   var mainPin = map.querySelector('.map__pin--main');
   var pinContainer = document.querySelector('.map__pins');
-  var MAIN_PIN_WIDTH = mainPin.offsetWidth;
-  var MAIN_PIN_HEIGHT = mainPin.offsetHeight;
-  var filter = map.querySelector('.map__filters'); /* Написать функции включения/отключения фильтра */
+  var MAIN_PIN_WIDTH = mainPin.offsetWidth; /* 62 */
+  var MAIN_PIN_HEIGHT = 82; /* 82 */
+  var filter = map.querySelector('.map__filters');
   var filterElements = filter.querySelectorAll(['select', 'fieldset']);
   var htmlClassMapDisable = 'map--faded';
 
@@ -35,8 +35,8 @@
 
   function getMainPinCoordinates() { /* Переписать возврат координат в зависимости от активности страницы (либо возвращается координата центра, либо низа пина) */
     return {
-      x: mainPin.offsetLeft + mainPin.offsetWidth / 2,
-      y: mainPin.offsetTop + mainPin.offsetHeight /* /2 */
+      x: Math.floor(mainPin.offsetLeft + MAIN_PIN_WIDTH / 2),
+      y: Math.floor(mainPin.offsetTop + MAIN_PIN_HEIGHT) /* /2 */
     }
   }
 
@@ -46,13 +46,13 @@
 
   function activateMap() {
     map.classList.remove(htmlClassMapDisable);
+    enableFilter();
   }
 
   function deactivateMap() {
-    // window.map.activated = false;
     map.classList.add(htmlClassMapDisable);
-    // window.form.deactivateForm(adForm, 'ad-form--disabled');
-    // window.form.deactivateForm(filter);
+    removePins();
+    disableFilter();
   }
 
   function enableFilter() {
@@ -75,13 +75,36 @@
     pinContainer.appendChild(fragment);
   }
 
+  function removePins() {
+    var pins = document.querySelectorAll('.map__pin:not(.map__pin--main');
+    pins.forEach(pin => {
+      pin.remove();
+    });
+  }
+
   function onMainPinMousedown(evt) {
     evt.preventDefault();
-    // mainPin.style.zIndex = '1000';
     if (!isMapActive()) { /* Если карта не активна */
       if (mouseDownCallback) {
         mouseDownCallback();
       }
+    }
+
+    function validateCoords(coordinates) { /* coordinates = {x: value, y: value} */
+      var result = {
+        x: {
+          statusLeft: coordinates.x >= MAP_BOUNDARIES.LEFT - MAIN_PIN_WIDTH / 2,
+          statusRight: coordinates.x <= MAP_BOUNDARIES.RIGHT - MAIN_PIN_WIDTH / 2,
+        },
+        y: {
+          statusTop: coordinates.y >= MAP_BOUNDARIES.TOP - MAIN_PIN_HEIGHT,
+          statusBottom: coordinates.y <= MAP_BOUNDARIES.BOTTOM - MAIN_PIN_HEIGHT,
+        }
+      };
+      result.x.status = result.x.statusLeft && result.x.statusRight;
+      result.y.status = result.y.statusTop && result.y.statusBottom;
+      result.status = result.x.status && result.y.status;
+      return result;
     }
 
     var startCoords = {
@@ -89,49 +112,60 @@
       y: evt.clientY
     };
 
-    function checkLimitPosition(checkedX, checkedY) {
-      var limit = {
-        x: {
-          min: MAP_BOUNDARIES.LEFT - MAIN_PIN_WIDTH / 2,
-          max: MAP_BOUNDARIES.RIGHT - MAIN_PIN_WIDTH / 2
-        },
-        y: {
-          min: MAP_BOUNDARIES.TOP - MAIN_PIN_HEIGHT,
-          max: MAP_BOUNDARIES.BOTTOM - MAIN_PIN_HEIGHT
-        }
-      };
-      checkedX = checkedX <= limit.x.min ? limit.x.min : checkedX;
-      checkedY = checkedY <= limit.y.min ? limit.y.min : checkedY;
-      checkedX = checkedX >= limit.x.max ? limit.x.max : checkedX;
-      checkedY = checkedY >= limit.y.max ? limit.y.max : checkedY;
-
-      return {x: checkedX, y: checkedY};
-    }
-
     function onMouseMove(moveEvt) {
       moveEvt.preventDefault();
+      if (mouseMoveCallback) {
+        mouseMoveCallback();
+      }
+      mainPin.style.zIndex = '1000';
 
-      var shift = {
-        x: startCoords.x - moveEvt.clientX,
-        y: startCoords.y - moveEvt.clientY
-      };
+      var newPosition = {
+        x: mainPin.offsetLeft - (startCoords.x - moveEvt.clientX),
+        y: mainPin.offsetTop - (startCoords.y - moveEvt.clientY)
+      }
 
-      startCoords = {
-        x: moveEvt.clientX,
-        y: moveEvt.clientY
-      };
+      var isValidCoords = validateCoords(newPosition);
+      // console.log('newPosition', newPosition);
+      console.log(isValidCoords);
 
-      var newPosition = checkLimitPosition(mainPin.offsetLeft - shift.x, mainPin.offsetTop - shift.y);
+      if (isValidCoords.x.status) {
+        mainPin.style.left = newPosition.x + 'px';
+        startCoords.x = moveEvt.clientX;
+      } else if (!isValidCoords.x.statusRight) {
+          mainPin.style.left = MAP_BOUNDARIES.RIGHT - MAIN_PIN_WIDTH / 2 + 'px';
+          startCoords.x = mainPin.offsetLeft + MAIN_PIN_WIDTH * 2 + MAIN_PIN_WIDTH / 2;
+        } else if (!isValidCoords.x.statusLeft) {
+            mainPin.style.left = MAP_BOUNDARIES.LEFT - MAIN_PIN_WIDTH / 2 + 'px';
+            startCoords.x = mainPin.offsetLeft + MAIN_PIN_WIDTH * 2 +  MAIN_PIN_WIDTH / 2;
+          }
 
-      mainPin.style.left = newPosition.x + 'px';
-      mainPin.style.top = newPosition.y + 'px';
-      // window.form.setAddress(window.mainPin.getCoordinates().x, window.mainPin.getCoordinates().y);
+      console.log(mainPin.offsetLeft)
+      if (isValidCoords.y.status) {
+        startCoords.y = moveEvt.clientY;
+        mainPin.style.top = newPosition.y + 'px';
+      } else if (!isValidCoords.y.statusBottom) {
+          mainPin.style.top = MAP_BOUNDARIES.BOTTOM - MAIN_PIN_HEIGHT + 'px';
+          startCoords.y = mainPin.offsetTop + MAIN_PIN_HEIGHT - MAIN_PIN_HEIGHT / 2;
+        }
+
+
+
+      // if (isValidCoords.x) {
+      //   startCoords.x = moveEvt.clientX;
+      //   mainPin.style.left = newPosition.x + 'px';
+      // }
+      // if (isValidCoords.y) {
+      //   startCoords.y = moveEvt.clientY;
+      //   mainPin.style.top = newPosition.y + 'px';
+      // }
     }
 
     function onMouseUp(upEvt) {
       upEvt.preventDefault();
-      activateMap();
-      // window.form.setAddress(window.mainPin.getCoordinates().x, window.mainPin.getCoordinates().y);
+      if (mouseUpCallback) {
+        mouseUpCallback()
+      }
+      mainPin.style.zIndex = '';
       document.removeEventListener('mousemove', onMouseMove);
       document.removeEventListener('mouseup', onMouseUp);
     }
@@ -147,8 +181,8 @@
     deactivate: deactivateMap,
     getMainPinCoordinates: getMainPinCoordinates,
     addPins: addPins,
-    enableFilter: enableFilter,
-    disableFilter: disableFilter,
-    setMouseDownCallback: setMouseDownCallback
+    setMouseDownCallback: setMouseDownCallback,
+    setMouseMoveCallback: setMouseMoveCallback,
+    setMouseUpCallback: setMouseUpCallback,
   }
 }());

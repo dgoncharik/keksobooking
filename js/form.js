@@ -45,15 +45,15 @@
   }
 
   function onHousTypeElementClick(evt) {
-    window.form.setMinPrice(minPrices[evt.target.value]);
+    setMinPrice(minPrices[evt.target.value]);
   }
 
   function onTimeInElementChange() {
-    window.form.setValueField(timeOutElement, timeInElement.value);
+    setValueField(timeOutElement, timeInElement.value);
   }
 
   function onTimeOutElementChange() {
-    window.form.setValueField(timeInElement, timeOutElement.value);
+    setValueField(timeInElement, timeOutElement.value);
   }
 
   housTypeElement.addEventListener('change', function(evt) {
