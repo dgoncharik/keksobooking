@@ -16,6 +16,7 @@
 
   function deactiovatePage() {
     window.map.deactivate();
+    setAddressToForm();
     window.form.disable();
   }
 

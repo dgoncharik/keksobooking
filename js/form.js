@@ -8,7 +8,7 @@
   var housTypeElement = adForm.querySelector('#type');
   var timeInElement = adForm.querySelector('#timein');
   var timeOutElement = adForm.querySelector('#timeout');
-  var formElements = adForm.querySelectorAll(['input', 'select', 'textarea', 'button']);
+  var formElements = adForm.querySelectorAll(['input', 'select', 'textarea', 'button', 'label']);
   var htmlClassDisabled = 'ad-form--disabled';
   var minPrices = {
     bungalo: 0,
@@ -19,6 +19,7 @@
 
   function enableForm() {
     for (var i = 0; i < formElements.length; i++) {
+      formElements[i].style.cursor = '';
       formElements[i].removeAttribute('disabled');
     }
     adForm.classList.remove(htmlClassDisabled);
@@ -26,6 +27,7 @@
 
   function disableForm() {
     for (var i = 0; i < formElements.length; i++) {
+      formElements[i].style.cursor = 'default';
       formElements[i].disabled = true;
     }
     adForm.classList.add(htmlClassDisabled);

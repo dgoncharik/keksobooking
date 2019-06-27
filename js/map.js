@@ -4,10 +4,10 @@
   var map = document.querySelector('.map');
   var mainPin = map.querySelector('.map__pin--main');
   var pinContainer = document.querySelector('.map__pins');
-  var MAIN_PIN_WIDTH = mainPin.offsetWidth; /* 62 */
-  var MAIN_PIN_HEIGHT = 82; /* 82 */
+  var MAIN_PIN_WIDTH = mainPin.offsetWidth;
+  var MAIN_PIN_HEIGHT = 82;
   var filter = map.querySelector('.map__filters');
-  var filterElements = filter.querySelectorAll(['select', 'fieldset']);
+  var filterElements = filter.querySelectorAll(['select', 'fieldset', 'label']);
   var htmlClassMapDisable = 'map--faded';
 
   var MAP_BOUNDARIES = {
@@ -33,10 +33,10 @@
     mouseUpCallback = fn;
   }
 
-  function getMainPinCoordinates() { /* Переписать возврат координат в зависимости от активности страницы (либо возвращается координата центра, либо низа пина) */
+  function getMainPinCoordinates() {
     return {
       x: Math.floor(mainPin.offsetLeft + MAIN_PIN_WIDTH / 2),
-      y: Math.floor(mainPin.offsetTop + MAIN_PIN_HEIGHT) /* /2 */
+      y: Math.floor(isMapActive() ? mainPin.offsetTop + MAIN_PIN_HEIGHT : mainPin.offsetTop + MAIN_PIN_HEIGHT / 2) /* /2 */
     }
   }
 
@@ -57,12 +57,14 @@
 
   function enableFilter() {
     for (var i = 0; i < filterElements.length; i++) {
+      filterElements[i].style.cursor = '';
       filterElements[i].removeAttribute('disabled');
     }
   }
 
   function disableFilter() {
     for (var i = 0; i < filterElements.length; i++) {
+      filterElements[i].style.cursor = 'default';
       filterElements[i].disabled = true;
     }
   }
@@ -107,6 +109,13 @@
       return result;
     }
 
+    function setStartCoordsPinIsOffside(axis) { /* axis = 'x' or 'y */
+      if (axis === 'x' || axis === 'y') {
+        return axis === 'x' ? map.offsetLeft + mainPin.offsetLeft + MAIN_PIN_WIDTH / 2 : mainPin.offsetTop + MAIN_PIN_HEIGHT / 2 - window.pageYOffset;
+      }
+      return false;
+    }
+
     var startCoords = {
       x: evt.clientX,
       y: evt.clientY
@@ -125,39 +134,28 @@
       }
 
       var isValidCoords = validateCoords(newPosition);
-      // console.log('newPosition', newPosition);
-      console.log(isValidCoords);
 
       if (isValidCoords.x.status) {
         mainPin.style.left = newPosition.x + 'px';
         startCoords.x = moveEvt.clientX;
       } else if (!isValidCoords.x.statusRight) {
-          mainPin.style.left = MAP_BOUNDARIES.RIGHT - MAIN_PIN_WIDTH / 2 + 'px';
-          startCoords.x = mainPin.offsetLeft + MAIN_PIN_WIDTH * 2 + MAIN_PIN_WIDTH / 2;
+          mainPin.style.left = (MAP_BOUNDARIES.RIGHT - MAIN_PIN_WIDTH / 2) + 'px';
+          startCoords.x = setStartCoordsPinIsOffside('x');
         } else if (!isValidCoords.x.statusLeft) {
-            mainPin.style.left = MAP_BOUNDARIES.LEFT - MAIN_PIN_WIDTH / 2 + 'px';
-            startCoords.x = mainPin.offsetLeft + MAIN_PIN_WIDTH * 2 +  MAIN_PIN_WIDTH / 2;
+            mainPin.style.left = (MAP_BOUNDARIES.LEFT - MAIN_PIN_WIDTH / 2) + 'px';
+            startCoords.x = setStartCoordsPinIsOffside('x');
           }
 
-      console.log(mainPin.offsetLeft)
       if (isValidCoords.y.status) {
         startCoords.y = moveEvt.clientY;
         mainPin.style.top = newPosition.y + 'px';
       } else if (!isValidCoords.y.statusBottom) {
-          mainPin.style.top = MAP_BOUNDARIES.BOTTOM - MAIN_PIN_HEIGHT + 'px';
-          startCoords.y = mainPin.offsetTop + MAIN_PIN_HEIGHT - MAIN_PIN_HEIGHT / 2;
-        }
-
-
-
-      // if (isValidCoords.x) {
-      //   startCoords.x = moveEvt.clientX;
-      //   mainPin.style.left = newPosition.x + 'px';
-      // }
-      // if (isValidCoords.y) {
-      //   startCoords.y = moveEvt.clientY;
-      //   mainPin.style.top = newPosition.y + 'px';
-      // }
+          mainPin.style.top = (MAP_BOUNDARIES.BOTTOM - MAIN_PIN_HEIGHT) + 'px';
+          startCoords.y = setStartCoordsPinIsOffside('y');
+        } else if (!isValidCoords.y.statusTop) {
+            mainPin.style.top = (MAP_BOUNDARIES.TOP - MAIN_PIN_HEIGHT) + 'px';
+            startCoords.y = setStartCoordsPinIsOffside('y');
+          }
     }
 
     function onMouseUp(upEvt) {
