@@ -86,6 +86,8 @@
 
   function onMainPinMousedown(evt) {
     evt.preventDefault();
+    mainPin.style.zIndex = '1000';
+    
     if (!isMapActive()) { /* Если карта не активна */
       if (mouseDownCallback) {
         mouseDownCallback();
@@ -126,7 +128,6 @@
       if (mouseMoveCallback) {
         mouseMoveCallback();
       }
-      mainPin.style.zIndex = '1000';
 
       var newPosition = {
         x: mainPin.offsetLeft - (startCoords.x - moveEvt.clientX),
