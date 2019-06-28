@@ -4,7 +4,7 @@
   var map = document.querySelector('.map');
   var mainPin = map.querySelector('.map__pin--main');
   var pinContainer = document.querySelector('.map__pins');
-  var MAIN_PIN_WIDTH = mainPin.offsetWidth;
+  var MAIN_PIN_WIDTH = 65;
   var MAIN_PIN_HEIGHT = 82;
   var filter = map.querySelector('.map__filters');
   var filterElements = filter.querySelectorAll(['select', 'fieldset', 'label']);
@@ -36,12 +36,12 @@
   function getMainPinCoordinates() {
     return {
       x: Math.floor(mainPin.offsetLeft + MAIN_PIN_WIDTH / 2),
-      y: Math.floor(isMapActive() ? mainPin.offsetTop + MAIN_PIN_HEIGHT : mainPin.offsetTop + MAIN_PIN_HEIGHT / 2) /* /2 */
-    }
+      y: Math.floor(isMapActive() ? mainPin.offsetTop + MAIN_PIN_HEIGHT : mainPin.offsetTop + MAIN_PIN_HEIGHT / 2)
+    };
   }
 
   function isMapActive() {
-    return !map.classList.contains(htmlClassMapDisable)
+    return !map.classList.contains(htmlClassMapDisable);
   }
 
   function activateMap() {
@@ -87,7 +87,7 @@
   function onMainPinMousedown(evt) {
     evt.preventDefault();
     mainPin.style.zIndex = '1000';
-    
+
     if (!isMapActive()) { /* Если карта не активна */
       if (mouseDownCallback) {
         mouseDownCallback();
@@ -111,11 +111,11 @@
       return result;
     }
 
-    function setStartCoordsPinIsOffside(axis) { /* axis = 'x' or 'y */
+    function setStartCoordsPinIsOffside(axis) { /* axis = 'x' or 'y' */
       if (axis === 'x' || axis === 'y') {
         return axis === 'x' ? map.offsetLeft + mainPin.offsetLeft + MAIN_PIN_WIDTH / 2 : mainPin.offsetTop + MAIN_PIN_HEIGHT / 2 - window.pageYOffset;
       }
-      return false;
+      throw new Error('setStartCoordsPinIsOffside takes one string parameter "x" or "y". Unmatched parameter - ' + axis + ', type - ' + typeof(axis));
     }
 
     var startCoords = {
@@ -125,9 +125,6 @@
 
     function onMouseMove(moveEvt) {
       moveEvt.preventDefault();
-      if (mouseMoveCallback) {
-        mouseMoveCallback();
-      }
 
       var newPosition = {
         x: mainPin.offsetLeft - (startCoords.x - moveEvt.clientX),
@@ -157,16 +154,20 @@
             mainPin.style.top = (MAP_BOUNDARIES.TOP - MAIN_PIN_HEIGHT) + 'px';
             startCoords.y = setStartCoordsPinIsOffside('y');
           }
+
+      if (mouseMoveCallback) {
+        mouseMoveCallback();
+      }
     }
 
     function onMouseUp(upEvt) {
       upEvt.preventDefault();
-      if (mouseUpCallback) {
-        mouseUpCallback()
-      }
       mainPin.style.zIndex = '';
       document.removeEventListener('mousemove', onMouseMove);
       document.removeEventListener('mouseup', onMouseUp);
+      if (mouseUpCallback) {
+        mouseUpCallback();
+      }
     }
 
     document.addEventListener('mousemove', onMouseMove);
