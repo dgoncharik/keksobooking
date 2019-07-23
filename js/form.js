@@ -10,7 +10,7 @@
   var timeOutElement = adForm.querySelector('#timeout');
   var formElements = adForm.querySelectorAll(['input', 'select', 'textarea', 'button', 'label']);
   var htmlClassDisabled = 'ad-form--disabled';
-  var minPrices = {
+  var MIN_PRICES = {
     bungalo: 0,
     flat: 1000,
     house: 5000,
@@ -47,7 +47,7 @@
   }
 
   function onHousTypeElementClick(evt) {
-    setMinPrice(minPrices[evt.target.value]);
+    setMinPrice(MIN_PRICES[evt.target.value]);
   }
 
   function onTimeInElementChange() {

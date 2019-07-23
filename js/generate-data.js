@@ -36,7 +36,5 @@
     return result;
   }
 
-  window.data = {
-    generateData: generateData
-  }
+  window.generateData = generateData;
 }())
