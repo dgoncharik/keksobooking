@@ -14,16 +14,16 @@
           onLoadCallback(xhr.response);
           break;
         case 401:
-          error = 'Пользователь не авторизован.';
+          error = xhr.status + ' Пользователь не авторизован.';
           break;
         case 403:
-          error = 'Отклонено. Нет доступа.';
+          error = xhr.status + ' Отклонено. Нет доступа.';
           break;
         case 404:
-          error = 'Запрашиваемый ресурс не найден.';
+          error = xhr.status + ' Запрашиваемый ресурс не найден.';
           break;
         case 500:
-          error = 'Внутренняя ошибка сервера';
+          error = xhr.status + ' Внутренняя ошибка сервера';
           break;
 
         default:

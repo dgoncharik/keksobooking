@@ -21,11 +21,11 @@
       conditioner: 'popup__feature--conditioner'
   };
 
-  function renderFeatureElement(typeFeature) {
-    var feature = document.createElement('li');
-    feature.classList.add('popup__feature');
-    feature.classList.add(FEATURES[typeFeature]);
-    return feature;
+  function renderFeatureElement(feature) {
+    var featureElement = document.createElement('li');
+    featureElement.classList.add('popup__feature');
+    featureElement.classList.add(FEATURES[feature]);
+    return featureElement;
   }
 
   function insertFeaturesElements(cardElement, arrTypesFeatures) {
