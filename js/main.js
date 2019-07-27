@@ -38,10 +38,10 @@
 
   function formDataUploadError(error) {
     var placeForError = document.querySelector('main');
-    window.error.show(error, placeForError, submitForm);
+    window.error.show(error, placeForError, onFormSubmit);
   }
 
-  function submitForm(evt) {
+  function onFormSubmit(evt) {
     if (evt) {
       evt.preventDefault();
     };
@@ -52,7 +52,7 @@
   window.map.setMouseDownCallback(activatePage);
   window.map.setMouseMoveCallback(setAddressToForm);
   window.map.setMouseUpCallback(setAddressToForm);
-  window.form.setSubmitCallback(submitForm);
+  window.form.setSubmitCallback(onFormSubmit);
 
   deactivatePage();
 }())
