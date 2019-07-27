@@ -4,9 +4,10 @@
   var errorTemplate = document.querySelector('#error').content.querySelector('.error');
   var ESC_KEYCODE = 27;
 
-  function renderError(text, callback) {
+  function renderError(text, tryAgainCallback) {
     var error = errorTemplate.cloneNode(true);
     var btnTryAgain = error.querySelector('.error__button');
+
     function onDocumentKeydown(evt) {
       if (evt.keyCode === ESC_KEYCODE) {
         evt.preventDefault();
@@ -14,24 +15,31 @@
         document.removeEventListener('keydown', onDocumentKeydown);
       }
     }
+
+    function onBtnTryAgainClick(evt) {
+      evt.preventDefault();
+      if (tryAgainCallback) {
+        error.remove();
+        tryAgainCallback();
+      }
+    }
+    
+    btnTryAgain.addEventListener('click', onBtnTryAgainClick)
     document.addEventListener('keydown', onDocumentKeydown);
     error.querySelector('.error__message').textContent = text;
-    btnTryAgain.addEventListener('click', function(evt) {
-      evt.preventDefault();
-      if (callback) {
-        error.remove();
-        callback();
-      }
-    })
     return error;
   }
 
-  function showError(text, placeForError, callback) {
-    var oldErrors = Array.from(placeForError.querySelectorAll('.error'));
-    oldErrors.forEach(error => {
+  function removeErrors(place) {
+    var errors = Array.from(place.querySelectorAll('.error'));
+    errors.forEach(error => {
       error.remove();
     });
-    placeForError.appendChild(renderError(text, callback));
+  }
+
+  function showError(text, placeForError, tryAgainCallback) {
+    removeErrors(placeForError);
+    placeForError.appendChild(renderError(text, tryAgainCallback));
   }
 
   window.error = {
