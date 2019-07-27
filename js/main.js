@@ -1,15 +1,18 @@
 'use strict';
 (function() {
-  var adForm = document.querySelector('.ad-form');
-  var placeForAdFormError = document.querySelector('main');
+  var adFormElement = document.querySelector('.ad-form');
 
   function setAddressToForm() {
     window.form.setAddress(window.map.getMainPinCoordinates());
   }
 
+  function loadData() {
+    window.backend.load(onLoadDataDone, onLoadDataError);
+  }
+
   function activatePage() {
     window.map.activate();
-    window.backend.load(onLoadDataDone, onLoadDataError);
+    loadData();
     window.form.enable();
     setAddressToForm();
   }
@@ -26,29 +29,30 @@
   }
 
   function onLoadDataError(error) {
-    console.error(error);
+    alert(error);
   }
 
-  function onUploadAdformDone(data) {
-    console.log('done', data);
+  function onAdFormElementUploadDone(data) {
+    console.log('Upload done.\nData: ', data);
+    adFormElement.reset();
   }
 
-  function onUploadAdformError(error) {
-    window.error.show(error, placeForAdFormError, onSubmitAdForm);
+  function onAdFormElementUploadError(error) {
+    window.error.show(error, document.querySelector('main'), onAdFormElementSubmit);
   }
 
-  function onSubmitAdForm(evt) {
+  function onAdFormElementSubmit(evt) {
     if (evt) {
       evt.preventDefault();
     };
-    var data = new FormData(adForm);
-    window.backend.upload(data, onUploadAdformDone, onUploadAdformError);
+    var data = new FormData(adFormElement);
+    window.backend.upload(data, onAdFormElementUploadDone, onAdFormElementUploadError);
   }
 
   window.map.setMouseDownCallback(activatePage);
   window.map.setMouseMoveCallback(setAddressToForm);
   window.map.setMouseUpCallback(setAddressToForm);
-  adForm.addEventListener('submit', onSubmitAdForm);
+  adFormElement.addEventListener('submit', onAdFormElementSubmit);
 
   deactivatePage();
 }())

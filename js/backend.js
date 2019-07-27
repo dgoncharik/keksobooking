@@ -1,7 +1,17 @@
 'use strict';
 (function(){
-  var URL_LOAD = 'https://js.dump.academy/keksobooking/data';
-  var URL_UPLOAD = 'https://js.dump.academy/keksobooking';
+  var Url = {
+    LOAD: 'https://js.dump.academy/keksobooking/data',
+    UPLOAD: 'https://js.dump.academy/keksobooking'
+  }
+
+  var Code = {
+    SUCCESS: 200,
+    NOT_AUTHORIZED: 401,
+    NO_ACCESS: 403,
+    NOT_FOUND: 404,
+    SERVER_ERROR: 500
+  };
 
   function createXhr(onLoadCallback, onErrorCallback) {
     var xhr = new XMLHttpRequest();
@@ -10,19 +20,19 @@
     xhr.addEventListener('load', function() {
       var error;
       switch (xhr.status) {
-        case 200:
+        case Code.SUCCESS:
           onLoadCallback(xhr.response);
           break;
-        case 401:
+        case Code.NOT_AUTHORIZED:
           error = xhr.status + ' Пользователь не авторизован.';
           break;
-        case 403:
+        case Code.NO_ACCESS:
           error = xhr.status + ' Отклонено. Нет доступа.';
           break;
-        case 404:
+        case Code.NOT_FOUND:
           error = xhr.status + ' Запрашиваемый ресурс не найден.';
           break;
-        case 500:
+        case Code.SERVER_ERROR:
           error = xhr.status + ' Внутренняя ошибка сервера';
           break;
 
@@ -48,13 +58,13 @@
 
   function load(onLoadCallback, onErrorCallback) {
     var loadXhr = createXhr(onLoadCallback, onErrorCallback);
-    loadXhr.open('GET', URL_LOAD);
+    loadXhr.open('GET', Url.LOAD);
     loadXhr.send();
   }
 
   function upload(data, onLoadCallback, onErrorCallback) {
     var uploadXhr = createXhr(onLoadCallback, onErrorCallback);
-    uploadXhr.open('POST', URL_UPLOAD);
+    uploadXhr.open('POST', Url.UPLOAD);
     uploadXhr.send(data);
   }
 

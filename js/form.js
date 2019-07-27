@@ -2,35 +2,36 @@
 'use strict';
 
 (function() {
-  var adForm = document.querySelector('.ad-form');
-  var addressElement = adForm.querySelector('#address');
-  var priceElement = adForm.querySelector('#price');
-  var housTypeElement = adForm.querySelector('#type');
-  var timeInElement = adForm.querySelector('#timein');
-  var timeOutElement = adForm.querySelector('#timeout');
-  var formElements = adForm.querySelectorAll(['input', 'select', 'textarea', 'button', 'label']);
+  var adFormElement = document.querySelector('.ad-form');
+  var addressElement = adFormElement.querySelector('#address');
+  var priceElement = adFormElement.querySelector('#price');
+  var housTypeElement = adFormElement.querySelector('#type');
+  var timeInElement = adFormElement.querySelector('#timein');
+  var timeOutElement = adFormElement.querySelector('#timeout');
+  var formElements = Array.from(adFormElement.querySelectorAll(['input', 'select', 'textarea', 'button', 'label']));
   var htmlClassDisabled = 'ad-form--disabled';
-  var MIN_PRICES = {
-    bungalo: 0,
-    flat: 1000,
-    house: 5000,
-    palace: 10000
+
+  var housingTypeToPrice = {
+    'bungalo': 0,
+    'flat': 1000,
+    'house': 5000,
+    'palace': 10000
   };
 
   function enableForm() {
-    for (var i = 0; i < formElements.length; i++) {
-      formElements[i].style.cursor = '';
-      formElements[i].removeAttribute('disabled');
-    }
-    adForm.classList.remove(htmlClassDisabled);
+    formElements.forEach(element => {
+      element.style.cursor = '';
+      element.removeAttribute('disabled');
+    });
+    adFormElement.classList.remove(htmlClassDisabled);
   }
 
   function disableForm() {
-    for (var i = 0; i < formElements.length; i++) {
-      formElements[i].style.cursor = 'default';
-      formElements[i].disabled = true;
-    }
-    adForm.classList.add(htmlClassDisabled);
+    formElements.forEach(element => {
+      element.style.cursor = 'default';
+      element.disabled = true;
+    });
+    adFormElement.classList.add(htmlClassDisabled);
   }
 
   function setAddress(coord) { /* coord = {x: value, y: value} */
@@ -47,7 +48,7 @@
   }
 
   function onHousTypeElementClick(evt) {
-    setMinPrice(MIN_PRICES[evt.target.value]);
+    setMinPrice(housingTypeToPrice[evt.target.value]);
   }
 
   function onTimeInElementChange() {

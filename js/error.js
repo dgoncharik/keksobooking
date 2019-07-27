@@ -27,7 +27,7 @@
   }
 
   function showError(text, placeForError, callback) {
-    var oldErrors = placeForError.querySelectorAll('.error');
+    var oldErrors = Array.from(placeForError.querySelectorAll('.error'));
     oldErrors.forEach(error => {
       error.remove();
     });

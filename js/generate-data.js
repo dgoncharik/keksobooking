@@ -3,16 +3,18 @@
 (function() {
   var map = document.querySelector('.map');
   var housingTypes = ['palace', 'flat', 'house', 'bungalo'];
-  var PIN_WIDTH = 50;
-  var PIN_HEIGHT = 70;
-  var positionLimit = {
-    x: {
-      min: 0,
-      max: map.offsetWidth - PIN_WIDTH
+  var PinSize = {
+    WIDTH: 50,
+    HEIGHT: 70
+  }
+  var PositionLimit = {
+    X: {
+      MIN: 0,
+      MAX: map.offsetWidth - PinSize.WIDTH
     },
-    y: {
-      min: 130 - PIN_HEIGHT,
-      max: 630 - PIN_HEIGHT
+    Y: {
+      MIN: 130 - PinSize.HEIGHT,
+      MAX: 630 - PinSize.HEIGHT
     }
   };
 
@@ -27,8 +29,8 @@
           type: window.utils.getRandomElement(housingTypes)
         },
         location: {
-          x: window.utils.getRandomInteger(positionLimit.x.min, positionLimit.x.max),
-          y: window.utils.getRandomInteger(positionLimit.y.min, positionLimit.y.max)
+          x: window.utils.getRandomInteger(PositionLimit.X.MIN, PositionLimit.X.MAX),
+          y: window.utils.getRandomInteger(PositionLimit.Y.MIN, PositionLimit.Y.MAX)
         }
       };
       result.push(announcement);
