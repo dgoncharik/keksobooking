@@ -10,6 +10,7 @@
   var timeOutElement = adFormElement.querySelector('#timeout');
   var formElements = Array.from(adFormElement.querySelectorAll(['input', 'select', 'textarea', 'button', 'label']));
   var htmlClassDisabled = 'ad-form--disabled';
+  var onAdFormElementSubmit = null;
 
   var housingTypeToPrice = {
     'bungalo': 0,
@@ -17,6 +18,14 @@
     'house': 5000,
     'palace': 10000
   };
+
+  function setSubmitCallback(fn) {
+    onAdFormElementSubmit = fn;
+  }
+
+  function resetForm() {
+    adFormElement.reset();
+  }
 
   function enableForm() {
     formElements.forEach(element => {
@@ -71,9 +80,18 @@
     onTimeOutElementChange();
   });
 
+  adFormElement.addEventListener('submit', function(evt) {
+    if (onAdFormElementSubmit) {
+      onAdFormElementSubmit(evt);
+    }
+  })
+
   window.form = {
+    element: adFormElement,
+    reset: resetForm,
     enable: enableForm,
     disable: disableForm,
-    setAddress: setAddress
+    setAddress: setAddress,
+    setSubmitCallback: setSubmitCallback
   };
 }())

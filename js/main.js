@@ -1,18 +1,17 @@
 'use strict';
 (function() {
-  var adFormElement = document.querySelector('.ad-form');
 
   function setAddressToForm() {
     window.form.setAddress(window.map.getMainPinCoordinates());
   }
 
-  function loadData() {
-    window.backend.load(onLoadDataDone, onLoadDataError);
+  function loadPinsData() {
+    window.backend.load(onLoadPinsDataDone, onLoadPinsDataError);
   }
 
   function activatePage() {
     window.map.activate();
-    loadData();
+    loadPinsData();
     window.form.enable();
     setAddressToForm();
   }
@@ -23,36 +22,37 @@
     window.form.disable();
   }
 
-  function onLoadDataDone(data) {
+  function onLoadPinsDataDone(data) {
     var pins = window.pins.createPinElements(data);
     window.map.addPins(pins);
   }
 
-  function onLoadDataError(error) {
+  function onLoadPinsDataError(error) {
     alert(error);
   }
 
-  function onAdFormElementUploadDone(data) {
+  function formDataUploadDone(data) {
     console.log('Upload done.\nData: ', data);
-    adFormElement.reset();
+    window.form.reset();
   }
 
-  function onAdFormElementUploadError(error) {
-    window.error.show(error, document.querySelector('main'), onAdFormElementSubmit);
+  function formDataUploadError(error) {
+    var placeForError = document.querySelector('main');
+    window.error.show(error, placeForError, formSubmitCallback);
   }
 
-  function onAdFormElementSubmit(evt) {
+  function formSubmitCallback(evt) {
     if (evt) {
       evt.preventDefault();
     };
-    var data = new FormData(adFormElement);
-    window.backend.upload(data, onAdFormElementUploadDone, onAdFormElementUploadError);
+    var data = new FormData(window.form.element);
+    window.backend.upload(data, formDataUploadDone, formDataUploadError);
   }
 
   window.map.setMouseDownCallback(activatePage);
   window.map.setMouseMoveCallback(setAddressToForm);
   window.map.setMouseUpCallback(setAddressToForm);
-  adFormElement.addEventListener('submit', onAdFormElementSubmit);
+  window.form.setSubmitCallback(formSubmitCallback);
 
   deactivatePage();
 }())
