@@ -17,10 +17,9 @@
     }
 
     function onBtnTryAgainClick(evt) {
-      evt.preventDefault();
       if (tryAgainCallback) {
         error.remove();
-        tryAgainCallback();
+        tryAgainCallback(evt);
       }
     }
     

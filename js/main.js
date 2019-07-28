@@ -42,9 +42,7 @@
   }
 
   function onFormSubmit(evt) {
-    if (evt) {
-      evt.preventDefault();
-    };
+    evt.preventDefault();
     var data = new FormData(window.form.element);
     window.backend.upload(data, formDataUploadDone, formDataUploadError);
   }
