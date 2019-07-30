@@ -5,7 +5,7 @@
     window.form.setAddress(window.map.getMainPinCoordinates());
   }
 
-  function onPinClick(evt, pinInfo) {
+  function pinClickCallback(evt, pinInfo) {
     evt.preventDefault();
     var map = window.map.element;
     var card = window.card.render(pinInfo);
@@ -34,7 +34,7 @@
   }
 
   function onLoadPinsDataDone(data) {
-    var pinElements = window.pins.renderElements(data, onPinClick);
+    var pinElements = window.pins.renderElements(data, pinClickCallback);
     window.pins.removeAllFromDom();
     window.pins.insertAllInDom(pinElements);
   }
@@ -50,10 +50,10 @@
 
   function formDataUploadError(error) {
     var placeForError = document.querySelector('main');
-    window.error.show(error, placeForError, onFormSubmit);
+    window.error.show(error, placeForError, formSubmitCallback);
   }
 
-  function onFormSubmit(evt) {
+  function formSubmitCallback(evt) {
     evt.preventDefault();
     var data = new FormData(window.form.element);
     window.backend.upload(data, formDataUploadDone, formDataUploadError);
@@ -62,7 +62,7 @@
   window.map.setMouseDownCallback(activatePage);
   window.map.setMouseMoveCallback(setAddressToForm);
   window.map.setMouseUpCallback(setAddressToForm);
-  window.form.setSubmitCallback(onFormSubmit);
+  window.form.setSubmitCallback(formSubmitCallback);
 
   deactivatePage();
 }())
