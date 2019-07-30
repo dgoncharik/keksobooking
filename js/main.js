@@ -5,6 +5,14 @@
     window.form.setAddress(window.map.getMainPinCoordinates());
   }
 
+  function onPinClick(evt, pinInfo) {
+    evt.preventDefault();
+    var map = window.map.element;
+    var card = window.card.render(pinInfo);
+    window.card.removeAllFromDom();
+    map.insertBefore(card, map.querySelector('.map__filters-container'));
+  }
+
   function loadPinsData() {
     window.backend.load(onLoadPinsDataDone, onLoadPinsDataError);
   }
@@ -26,9 +34,9 @@
   }
 
   function onLoadPinsDataDone(data) {
-    var filteredData = data;
+    var pinElements = window.pins.renderElements(data, onPinClick);
     window.pins.removeAllFromDom();
-    window.pins.insertAllInDom(filteredData);
+    window.pins.insertAllInDom(pinElements);
   }
 
   function onLoadPinsDataError(error) {

@@ -146,6 +146,7 @@
   mainPin.addEventListener('mousedown', onMainPinMousedown)
 
   window.map = {
+    element: map,
     activate: activateMap,
     deactivate: deactivateMap,
     getMainPinCoordinates: getMainPinCoordinates,
