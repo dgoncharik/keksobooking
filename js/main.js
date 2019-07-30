@@ -13,14 +13,10 @@
     map.insertBefore(card, map.querySelector('.map__filters-container'));
   }
 
-  function loadPinsData() {
-    window.backend.load(onLoadPinsDataDone, onLoadPinsDataError);
-  }
-
   function activatePage() {
     window.map.activate();
     window.filter.enable();
-    loadPinsData();
+    window.backend.load(onLoadPinsDataDone, onLoadPinsDataError);
     window.form.enable();
     setAddressToForm();
   }

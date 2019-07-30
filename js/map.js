@@ -11,7 +11,7 @@
 
   var MapBoundary = {
     LEFT: 0,
-    RIGHT: map.offsetWidth,
+    RIGHT: 1200,
     TOP: 130,
     BOTTOM: 630
   };
