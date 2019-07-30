@@ -7,8 +7,6 @@
     WIDTH: 65,
     HEIGHT: 82
   };
-  var filter = map.querySelector('.map__filters');
-  var filterElements = Array.from(filter.querySelectorAll(['select', 'fieldset', 'label']));
   var htmlClassMapDisable = 'map--faded';
 
   var MapBoundary = {
@@ -47,27 +45,13 @@
 
   function activateMap() {
     map.classList.remove(htmlClassMapDisable);
-    enableFilter();
   }
 
   function deactivateMap() {
     map.classList.add(htmlClassMapDisable);
-    disableFilter();
   }
 
-  function enableFilter() {
-    filterElements.forEach(element => {
-      element.style.cursor = '';
-      element.removeAttribute('disabled');
-    });
-  }
 
-  function disableFilter() {
-    filterElements.forEach(element => {
-      element.style.cursor = 'default';
-      element.disabled = true;
-    });
-  }
 
   function onMainPinMousedown(evt) {
     evt.preventDefault();
@@ -160,10 +144,6 @@
   }
 
   mainPin.addEventListener('mousedown', onMainPinMousedown)
-
-  /* ==================================================== */
-
-  console.log(filter);
 
   window.map = {
     activate: activateMap,

@@ -131,7 +131,7 @@
     var fragment = document.createDocumentFragment();
     var arrPinElements = createPinElements(arrPinsInfo);
     arrPinElements.forEach(pin => {
-      fragment.appendChild(pin)
+      fragment.appendChild(pin);
     });
     pinContainer.appendChild(fragment);
   }
@@ -148,7 +148,7 @@
 
 
   window.pins = {
-    insertInDom: insertPinsInDom,
-    removeFromDom: removePinsFromDom,
+    insertAllInDom: insertPinsInDom,
+    removeAllFromDom: removePinsFromDom,
   }
 }())

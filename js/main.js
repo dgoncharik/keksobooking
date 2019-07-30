@@ -11,22 +11,24 @@
 
   function activatePage() {
     window.map.activate();
+    window.filter.enable();
     loadPinsData();
     window.form.enable();
     setAddressToForm();
   }
 
   function deactivatePage() {
-    window.pins.removeFromDom();
+    window.pins.removeAllFromDom();
     window.map.deactivate();
+    window.filter.disable();
     setAddressToForm();
     window.form.disable();
   }
 
   function onLoadPinsDataDone(data) {
     var filteredData = data;
-    // TODO Запилить filter в отдельный модуль из map
-    window.pins.insertInDom(filteredData);
+    window.pins.removeAllFromDom();
+    window.pins.insertAllInDom(filteredData);
   }
 
   function onLoadPinsDataError(error) {
