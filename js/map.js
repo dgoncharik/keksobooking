@@ -7,7 +7,6 @@
     WIDTH: 65,
     HEIGHT: 82
   };
-  var pinContainer = document.querySelector('.map__pins');
   var filter = map.querySelector('.map__filters');
   var filterElements = Array.from(filter.querySelectorAll(['select', 'fieldset', 'label']));
   var htmlClassMapDisable = 'map--faded';
@@ -53,7 +52,6 @@
 
   function deactivateMap() {
     map.classList.add(htmlClassMapDisable);
-    removePins();
     disableFilter();
   }
 
@@ -68,21 +66,6 @@
     filterElements.forEach(element => {
       element.style.cursor = 'default';
       element.disabled = true;
-    });
-  }
-
-  function addPins(arrPinElements) {
-    var fragment = document.createDocumentFragment();
-    arrPinElements.forEach(pin => {
-      fragment.appendChild(pin)
-    });
-    pinContainer.appendChild(fragment);
-  }
-
-  function removePins() {
-    var pins = Array.from(document.querySelectorAll('.map__pin:not(.map__pin--main'));
-    pins.forEach(pin => {
-      pin.remove();
     });
   }
 
@@ -178,11 +161,14 @@
 
   mainPin.addEventListener('mousedown', onMainPinMousedown)
 
+  /* ==================================================== */
+
+  console.log(filter);
+
   window.map = {
     activate: activateMap,
     deactivate: deactivateMap,
     getMainPinCoordinates: getMainPinCoordinates,
-    addPins: addPins,
     setMouseDownCallback: setMouseDownCallback,
     setMouseMoveCallback: setMouseMoveCallback,
     setMouseUpCallback: setMouseUpCallback,

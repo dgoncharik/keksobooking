@@ -5,6 +5,11 @@
   var filtersContainer = map.querySelector('.map__filters-container');
   var pinTemplate = document.querySelector('#pin').content.querySelector('.map__pin');
   var cardTemplate = document.querySelector('#card').content.querySelector('.map__card');
+  var pinContainer = map.querySelector('.map__pins');
+  var PinSize = {
+    WIDTH: 50,
+    HEIGHT: 70
+  }
   var housingTypeToRusLang = {
     'bungalo': 'Бунгало',
     'flat': 'Квартира',
@@ -102,8 +107,8 @@
   function renderPin(info) { /* info - объект */
     var pin = pinTemplate.cloneNode(true);
     var pinImg = pin.querySelector('img');
-    pin.style.left = info.location.x + 'px';
-    pin.style.top = info.location.y + 'px';
+    pin.style.left = (info.location.x - PinSize.WIDTH / 2) + 'px';
+    pin.style.top = info.location.y + 'px'; /* ? (info.location.y - PinSize.HEIGHT) + 'px'; */
     pinImg.src = info.author.avatar;
     pinImg.alt = info.offer.title;
     pin.addEventListener('click', function(evt) {
@@ -122,7 +127,28 @@
     return pins;
   }
 
+  function insertPinsInDom(arrPinsInfo) {
+    var fragment = document.createDocumentFragment();
+    var arrPinElements = createPinElements(arrPinsInfo);
+    arrPinElements.forEach(pin => {
+      fragment.appendChild(pin)
+    });
+    pinContainer.appendChild(fragment);
+  }
+
+  function removePinsFromDom() {
+    var pins = Array.from(document.querySelectorAll('.map__pin:not(.map__pin--main'));
+    pins.forEach(pin => {
+      pin.remove();
+    });
+  }
+
+  /* ==================================================== */
+
+
+
   window.pins = {
-    createPinElements: createPinElements
+    insertInDom: insertPinsInDom,
+    removeFromDom: removePinsFromDom,
   }
 }())

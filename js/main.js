@@ -17,14 +17,16 @@
   }
 
   function deactivatePage() {
+    window.pins.removeFromDom();
     window.map.deactivate();
     setAddressToForm();
     window.form.disable();
   }
 
   function onLoadPinsDataDone(data) {
-    var pins = window.pins.createPinElements(data);
-    window.map.addPins(pins);
+    var filteredData = data;
+    // TODO Запилить filter в отдельный модуль из map
+    window.pins.insertInDom(filteredData);
   }
 
   function onLoadPinsDataError(error) {
