@@ -1,6 +1,6 @@
 'use strict';
 
-(function(){
+(function() {
   var cardTemplate = document.querySelector('#card').content.querySelector('.map__card');
   var housingTypeToRusLang = {
     'bungalo': 'Бунгало',

@@ -1,8 +1,15 @@
 'use strict';
 (function() {
 
+  var MAX_PINS_ON_MAP; /* 5 */
+
   function setAddressToForm() {
     window.form.setAddress(window.map.getMainPinCoordinates());
+  }
+
+  function insertPinsInDom(data) {
+    var pinElements = window.pins.renderElements(data, pinClickCallback);
+    window.pins.insertInDom(pinElements, MAX_PINS_ON_MAP);
   }
 
   function pinClickCallback(evt, pinInfo) {
@@ -30,9 +37,8 @@
   }
 
   function onLoadPinsDataDone(data) {
-    var pinElements = window.pins.renderElements(data, pinClickCallback);
     window.pins.removeAllFromDom();
-    window.pins.insertAllInDom(pinElements);
+    insertPinsInDom(data);
   }
 
   function onLoadPinsDataError(error) {

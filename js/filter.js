@@ -1,22 +1,33 @@
 'use strict';
 
-(function(){
-  var filter = document.querySelector('.map__filters');
-  var filterElements = Array.from(filter.querySelectorAll(['select', 'fieldset', 'label']));
+(function() {
+  var filterFormElement = document.querySelector('.map__filters');
+  var childFilterElements = Array.from(filterFormElement.querySelectorAll(['select', 'fieldset', 'label']));
+
+  var filterElement = {
+    type: filterFormElement.querySelector('#housing-type'),
+    price: filterFormElement.querySelector('#housing-price'),
+    housingRooms: filterFormElement.querySelector('#housing-rooms'),
+    guests: filterFormElement.querySelector('#housing-guests'),
+    features: filterFormElement.querySelector('#housing-features')
+  };
 
   function enableFilter() {
-    filterElements.forEach(element => {
+    childFilterElements.forEach(element => {
       element.style.cursor = '';
       element.removeAttribute('disabled');
     });
   }
 
   function disableFilter() {
-    filterElements.forEach(element => {
+    childFilterElements.forEach(element => {
       element.style.cursor = 'default';
       element.disabled = true;
     });
   }
+
+  console.log('filterFormElement:\n', filterFormElement);
+  console.log(filterElement);
 
   window.filter = {
     enable: enableFilter,
