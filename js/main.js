@@ -1,10 +1,14 @@
 'use strict';
 (function() {
-
+  var pinsData;
   var MAX_PINS_ON_MAP; /* 5 */
 
   function setAddressToForm() {
     window.form.setAddress(window.map.getMainPinCoordinates());
+  }
+
+  function loadPinsData() {
+    window.backend.load(onLoadPinsDataDone, onLoadPinsDataError);
   }
 
   function insertPinsInDom(data) {
@@ -23,7 +27,7 @@
   function activatePage() {
     window.map.activate();
     window.filter.enable();
-    window.backend.load(onLoadPinsDataDone, onLoadPinsDataError);
+    loadPinsData();
     window.form.enable();
     setAddressToForm();
   }
@@ -37,8 +41,9 @@
   }
 
   function onLoadPinsDataDone(data) {
+    pinsData = data;
     window.pins.removeAllFromDom();
-    insertPinsInDom(data);
+    insertPinsInDom(pinsData);
   }
 
   function onLoadPinsDataError(error) {
