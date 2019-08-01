@@ -13,6 +13,7 @@
 
   function insertPinsInDom(data) {
     var pinElements = window.pins.renderElements(data, pinClickCallback);
+    window.pins.removeAllFromDom();
     window.pins.insertInDom(pinElements, MAX_PINS_ON_MAP);
   }
 
@@ -42,7 +43,7 @@
 
   function onLoadPinsDataDone(data) {
     pinsData = data;
-    window.pins.removeAllFromDom();
+    window.filter.refreshData(data);
     insertPinsInDom(pinsData);
   }
 
@@ -70,6 +71,7 @@
   window.map.setMouseMoveCallback(setAddressToForm);
   window.map.setMouseUpCallback(setAddressToForm);
   window.form.setSubmitCallback(formSubmitCallback);
+  window.filter.setChangeCallback(insertPinsInDom);
 
   deactivatePage();
 }())
