@@ -20,17 +20,61 @@
     filterChangeCallbak = fn;
   }
 
-  var filterSetting = {
-    type: filterTypeElement.value,
-    price: filterPriceElement.value,
-    rooms: filterRoomsElement.value,
-    guests: filterGuestsElement.value,
-    features: new Set(featuresCheckboxElements.filter(checkbox => {
-      return checkbox.checked;
-    }).map(checkbox => {
-      return checkbox.value;
-    }))
-  };
+  function getFilterSettings() {
+    var filterSettings = {
+      'type': filterTypeElement.value,
+      'price': filterPriceElement.value,
+      'rooms': filterRoomsElement.value,
+      'guests': filterGuestsElement.value,
+      'features': featuresCheckboxElements.filter(checkbox => {
+        return checkbox.checked;
+      }).map(checkbox => {
+        return checkbox.value;
+      })
+    };
+    return filterSettings;
+  }
+
+  function getGroupPrice(price) {
+    var groupPrice;
+    switch (true) {
+      case price < 10000:
+        groupPrice = 'low';
+        break;
+      case price >= 10000 && price <= 50000:
+        groupPrice = 'middle';
+        break;
+      case price > 50000:
+        groupPrice = 'high';
+        break
+    }
+    return groupPrice;
+  }
+
+  function filtration(arrData) { /* arrData - [{}, {}...] */
+    var filterSettings = getFilterSettings();
+    var filteredData = [];
+    var param = Object.keys(filterSettings);
+    filteredData = arrData.filter(curData => {
+      param.forEach(curParam => {
+        var curDataOffer = curParam === 'price' ? getGroupPrice(curData.offer[curParam]) : curData.offer[curParam];
+        console.log(curParam, curDataOffer + '==' + filterSettings[curParam])
+        if (filterSettings[curParam] != 'any' || filterSettings[curParam] != []) {}
+      })
+    })
+    // console.log(filterSettings);
+    console.log(filteredData);
+    return filteredData;
+  }
+
+  filterFormElement.addEventListener('change', function(evt) {
+    evt.preventDefault();
+    var filteredData = filtration(data);
+    if (filterChangeCallbak) {
+      filterChangeCallbak(filteredData);
+    }
+  })
+  // console.log(Object.keys(getFilterSettings()))
 
   function enableFilter() {
     childFilterElements.forEach(element => {
@@ -45,130 +89,6 @@
       element.disabled = true;
     });
   }
-
-  function getGroupPrice(price) {
-    var groupPrice;
-    switch (price) {
-      case price < 10000:
-        groupPrice = 'low';
-        break;
-      case price >= 10000 && price <= 50000:
-        groupPrice = 'middle';
-        break;
-      case price > 50000:
-        groupPrice = 'high';
-        break
-    }
-    console.log(groupPrice);
-    return groupPrice;
-  }
-
-  filterTypeElement.addEventListener('change', function(evt) {
-    evt.preventDefault();
-    filterSetting.type = filterTypeElement.value;
-    console.log(filterSetting);
-  })
-
-  filterPriceElement.addEventListener('change', function(evt) {
-    evt.preventDefault();
-    filterSetting.price = filterPriceElement.value;
-    console.log(filterSetting);
-  })
-
-  filterRoomsElement.addEventListener('change', function(evt) {
-    evt.preventDefault();
-    filterSetting.rooms = filterRoomsElement.value;
-    console.log(filterSetting);
-  })
-
-  filterGuestsElement.addEventListener('change', function(evt) {
-    evt.preventDefault();
-    filterSetting.guests = filterGuestsElement.value;
-    console.log(filterSetting);
-  })
-
-  featuresCheckboxElements.forEach(checkbox => {
-    checkbox.addEventListener('change', function(evt) {
-      evt.preventDefault();
-      var feature = checkbox.value;
-      if (checkbox.checked) {
-        filterSetting.features.add(feature);
-      } else {
-        filterSetting.features.delete(feature)
-      }
-      console.log(filterSetting);
-    })
-  })
-  console.log(filterSetting);
-
-  // function onFilterFormElementChange(evt) {
-  //   evt.preventDefault();
-  //   var selectElements = evt.currentTarget.querySelectorAll('select');
-  //   var featureElements = evt.currentTarget.querySelectorAll('input[type="checkbox"]');
-  //   var filteredData = [];
-  //   console.log(featureElements);
-  //   if (filterChangeCallbak) {
-  //     filterChangeCallbak(filteredData);
-  //   }
-  // }
-
-  // filterFormElement.addEventListener('change', onFilterFormElementChange);
-
-  // =================================================================
-
-  // function dataFiltering(arrData) { /* arrData - [{}, {}...] */
-  //   var filteredData = [];
-  //   arrData.forEach(itemInfo => {
-  //     if (filterSetting.type === itemInfo.offer.type &&
-  //         filterSetting.price === getGroupPrice(itemInfo.offer.price) &&
-  //         filterSetting.rooms === itemInfo.offer.rooms &&
-  //         filterSetting.guests === itemInfo.offer.guests) {
-  //           filteredData.push(itemInfo);
-  //         }
-  //   });
-  //   if (filterChangeCallbak) {
-  //     filterChangeCallbak(filteredData);
-  //   }
-  // }
-
-  // filterTypeElement.addEventListener('change', function(evt) {
-  //   evt.preventDefault();
-  //   filterSetting.type = filterTypeElement.value;
-  //   console.log(filterSetting);
-  // })
-
-
-  // filterPriceElement.addEventListener('change', function(evt) {
-  //   evt.preventDefault();
-  //   filterSetting.price = filterPriceElement.value;
-  //   console.log(filterSetting);
-  // })
-
-  // filterRoomsElement.addEventListener('change', function(evt) {
-  //   evt.preventDefault();
-  //   filterSetting.rooms = filterRoomsElement.value;
-  //   console.log(filterSetting);
-  // })
-
-  // filterGuestsElement.addEventListener('change', function(evt) {
-  //   evt.preventDefault();
-  //   filterSetting.guests = filterGuestsElement.value;
-  //   console.log(filterSetting);
-  // })
-
-  // featuresCheckboxElements.forEach(checkbox => {
-  //   checkbox.addEventListener('change', function(evt) {
-  //     evt.preventDefault();
-  //     var feature = checkbox.value;
-  //     if (checkbox.checked) {
-  //       filterSetting.features.add(feature);
-  //     } else {
-  //       filterSetting.features.delete(feature)
-  //     }
-  //     console.log(filterSetting);
-  //   })
-  // })
-  // console.log(filterSetting);
 
   window.filter = {
     enable: enableFilter,
