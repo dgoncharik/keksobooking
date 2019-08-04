@@ -2,8 +2,13 @@
 
 (function() {
   var filterFormElement = document.querySelector('.map__filters');
-  var childFilterElements = Array.from(filterFormElement.querySelectorAll(['select', 'fieldset', 'label']));
-  var data;
+  var filterItemsElements = Array.from(filterFormElement.querySelectorAll(['select', 'fieldset', 'label']));
+  var filterTypeElement = filterFormElement.querySelector('#housing-type');
+  var filterPriceElement = filterFormElement.querySelector('#housing-price');
+  var filterRoomsElement = filterFormElement.querySelector('#housing-rooms');
+  var filterGuestsElement = filterFormElement.querySelector('#housing-guests');
+  var filterCheckboxElementList = Array.from(filterFormElement.querySelectorAll('input[type="checkbox"'));
+  var data = [];
   var filterChangeCallbak;
 
   function refreshData(newData) {
@@ -16,11 +21,11 @@
 
   function getFilterSettings() {
     return {
-      'type': filterFormElement.querySelector('#housing-type').value,
-      'price': filterFormElement.querySelector('#housing-price').value,
-      'rooms': filterFormElement.querySelector('#housing-rooms').value,
-      'guests': filterFormElement.querySelector('#housing-guests').value,
-      'features': Array.from(filterFormElement.querySelectorAll('input[type="checkbox"')).filter(checkbox => {
+      'type': filterTypeElement.value,
+      'price': filterPriceElement.value,
+      'rooms': filterRoomsElement.value,
+      'guests': filterGuestsElement.value,
+      'features': filterCheckboxElementList.filter(checkbox => {
         return checkbox.checked;
       }).map(checkbox => {
         return checkbox.value;
@@ -44,19 +49,21 @@
     return groupPrice;
   }
 
+  function isSameItems(arr1, arr2) {
+    return arr1.every(element => {
+      return arr2.indexOf(element) != -1;
+    })
+  }
+
   function filtration(arrData) { /* arrData - [{}, {}...] */
     var filterSettings = getFilterSettings();
     var settingsList = Object.keys(filterSettings);
-    function isSameItems(arr1, arr2) {
-      return arr1.every(element => {
-        return arr2.indexOf(element) != -1;
-      })
-    }
     return arrData.filter(currentData => {
       return settingsList.every(settingName => {
         var valueSetting = filterSettings[settingName];
         var valueData = settingName === 'price' ? getGroupPrice(currentData.offer[settingName]) : currentData.offer[settingName];
-        return settingName !== 'features' ? valueSetting == 'any' || valueSetting == valueData : isSameItems(filterSettings.features, currentData.offer.features);
+        return settingName !== 'features' ? valueSetting == 'any' || valueSetting == valueData : isSameItems(filterSettings.features, 
+          currentData.offer.features);
       })
     })
   }
@@ -70,14 +77,14 @@
   })
 
   function enableFilter() {
-    childFilterElements.forEach(element => {
+    filterItemsElements.forEach(element => {
       element.style.cursor = '';
       element.removeAttribute('disabled');
     });
   }
 
   function disableFilter() {
-    childFilterElements.forEach(element => {
+    filterItemsElements.forEach(element => {
       element.style.cursor = 'default';
       element.disabled = true;
     });

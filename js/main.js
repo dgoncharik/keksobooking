@@ -1,6 +1,5 @@
 'use strict';
 (function() {
-  var pinsData;
   var MAX_PINS_ON_MAP; /* 5 */
 
   function setAddressToForm() {
@@ -14,6 +13,7 @@
   function insertPinsInDom(data) {
     var pinElements = window.pins.renderElements(data, pinClickCallback);
     window.pins.removeAllFromDom();
+    window.card.removeAllFromDom();
     window.pins.insertInDom(pinElements, MAX_PINS_ON_MAP);
   }
 
@@ -42,9 +42,8 @@
   }
 
   function onLoadPinsDataDone(data) {
-    pinsData = data;
     window.filter.refreshData(data);
-    insertPinsInDom(pinsData);
+    insertPinsInDom(data);
   }
 
   function onLoadPinsDataError(error) {
