@@ -1,6 +1,7 @@
 'use strict';
 (function() {
   var MAX_PINS_ON_MAP; /* 5 */
+  var FILTER_DEBOUNCE_INTERVALL = 500;
 
   function setAddressToForm() {
     window.form.setAddress(window.map.getMainPinCoordinates());
@@ -70,7 +71,7 @@
   window.map.setMouseMoveCallback(setAddressToForm);
   window.map.setMouseUpCallback(setAddressToForm);
   window.form.setSubmitCallback(formSubmitCallback);
-  window.filter.setChangeCallback(insertPinsInDom);
+  window.filter.setChangeCallback(window.debounce(insertPinsInDom, FILTER_DEBOUNCE_INTERVALL));
 
   deactivatePage();
 }())
