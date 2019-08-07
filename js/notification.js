@@ -7,7 +7,7 @@
   var SuccessTime = {
     ASCENT: 700,
     DISPLAY: 1000,
-    REMOVE: 900
+    REMOVE: 700
   };
 
   // success
