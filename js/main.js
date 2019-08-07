@@ -57,7 +57,6 @@
     window.notification.success('Ваше объявление<br>успешно размещено!', mainElement);
     window.form.reset();
     window.form.enable();
-    setAddressToForm();
   }
 
   function formDataUploadError(error) {
@@ -74,6 +73,7 @@
   window.map.setMouseDownCallback(activatePage);
   window.map.setMouseMoveCallback(setAddressToForm);
   window.map.setMouseUpCallback(setAddressToForm);
+  window.form.setResetCallback(setAddressToForm);
   window.form.setSubmitCallback(formSubmitCallback);
   window.filter.setChangeCallback(window.debounce(insertPinsInDom, FILTER_DEBOUNCE_INTERVALL));
 

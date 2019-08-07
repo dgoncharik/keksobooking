@@ -11,6 +11,7 @@
   var formElements = Array.from(adFormElement.querySelectorAll(['input', 'select', 'textarea', 'button', 'label']));
   var htmlClassDisabled = 'ad-form--disabled';
   var onAdFormElementSubmit = null;
+  var onAdFormElementReset = null;
 
   var housingTypeToPrice = {
     'bungalo': 0,
@@ -23,8 +24,15 @@
     onAdFormElementSubmit = fn;
   }
 
+  function setResetCallback(fn) {
+    onAdFormElementReset = fn;
+  }
+
   function resetForm() {
     adFormElement.reset();
+    if (onAdFormElementReset) {
+      onAdFormElementReset();
+    }
   }
 
   function enableForm() {
@@ -88,6 +96,12 @@
     onTimeOutElementChange();
   });
 
+  adFormElement.addEventListener('reset', function() {
+    if (onAdFormElementReset) {
+      setTimeout(onAdFormElementReset, 0);
+    }
+  })
+
   adFormElement.addEventListener('submit', function(evt) {
     if (onAdFormElementSubmit) {
       onAdFormElementSubmit(evt);
@@ -101,6 +115,7 @@
     isEnable: isFormEnable,
     setAddress: setAddress,
     getFormData: getFormData,
+    setResetCallback: setResetCallback,
     setSubmitCallback: setSubmitCallback
   };
 }())
