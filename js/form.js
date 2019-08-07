@@ -43,6 +43,10 @@
     adFormElement.classList.add(htmlClassDisabled);
   }
 
+  function isFormEnable() {
+    return !adFormElement.classList.contains(htmlClassDisabled);
+  }
+
   function setAddress(coord) { /* coord = {x: value, y: value} */
     addressElement.value = coord.x + ', ' + coord.y;
   }
@@ -54,6 +58,10 @@
 
   function setValueField(field, value) {
     field.value = value;
+  }
+
+  function getFormData() {
+    return new FormData(adFormElement);
   }
 
   function onHousTypeElementClick(evt) {
@@ -87,11 +95,12 @@
   })
 
   window.form = {
-    element: adFormElement,
     reset: resetForm,
     enable: enableForm,
     disable: disableForm,
+    isEnable: isFormEnable,
     setAddress: setAddress,
+    getFormData: getFormData,
     setSubmitCallback: setSubmitCallback
   };
 }())

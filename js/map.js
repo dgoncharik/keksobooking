@@ -55,9 +55,9 @@
 
   function onMainPinMousedown(evt) {
     evt.preventDefault();
-    mainPin.style.zIndex = '1000';
+    mainPin.style.zIndex = '2';
 
-    if (!isMapActive()) { /* Если карта не активна */
+    if (!isMapActive()) {
       if (mouseDownCallback) {
         mouseDownCallback();
       }

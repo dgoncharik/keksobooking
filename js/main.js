@@ -2,6 +2,7 @@
 (function() {
   var MAX_PINS_ON_MAP; /* 5 */
   var FILTER_DEBOUNCE_INTERVALL = 500;
+  var mainElement = document.querySelector('main');
 
   function setAddressToForm() {
     window.form.setAddress(window.map.getMainPinCoordinates());
@@ -48,22 +49,25 @@
   }
 
   function onLoadPinsDataError(error) {
-    alert(error);
+    window.notification.error(error, mainElement, loadPinsData)
   }
 
   function formDataUploadDone(data) {
-    console.log('Upload done.\nData: ', data);
+    console.log('Upload done! \n', data);
+    window.notification.success('Ваше объявление<br>успешно размещено!', mainElement);
     window.form.reset();
+    window.form.enable();
+    setAddressToForm();
   }
 
   function formDataUploadError(error) {
-    var placeForError = document.querySelector('main');
-    window.error.show(error, placeForError, formSubmitCallback);
+    window.notification.error(error, mainElement, formSubmitCallback, window.form.enable);
   }
 
   function formSubmitCallback(evt) {
     evt.preventDefault();
-    var data = new FormData(window.form.element);
+    var data = window.form.getFormData();
+    window.form.disable();
     window.backend.upload(data, formDataUploadDone, formDataUploadError);
   }
 

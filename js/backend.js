@@ -46,7 +46,7 @@
     });
 
     xhr.addEventListener('error', function() {
-      onErrorCallback('Произошла ошибка соеденения! Попробуйте обновить страницу.');
+      onErrorCallback('Ошибка соеденения!');
     });
 
     xhr.addEventListener('timeout', function() {
