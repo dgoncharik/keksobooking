@@ -39,23 +39,23 @@
     return element.value == 'any' || currentValueData == element.value;
   }
 
-  function _byType(itemData) {
+  function byType(itemData) {
     return dataValidation(filterTypeElement, itemData.offer.type);
   }
 
-  function _byPrice(itemData) {
+  function byPrice(itemData) {
     return dataValidation(filterPriceElement, getGroupPrice(itemData.offer.price));
   }
 
-  function _byRooms(itemData) {
+  function byRooms(itemData) {
     return dataValidation(filterRoomsElement, itemData.offer.rooms);
   }
 
-  function _byGuests(itemData) {
+  function byGuests(itemData) {
     return dataValidation(filterGuestsElement, itemData.offer.guests);
   }
 
-  function _byFeatures(itemData) {
+  function byFeatures(itemData) {
     var selectedFeatures = filterCheckboxElementList.filter(checkbox => {
       return checkbox.checked;
     }).map(checkbox => {
@@ -69,7 +69,7 @@
   }
 
   function filtration(arrData) { /* arrData - [{}, {}...] */
-    return arrData.filter(_byType).filter(_byPrice).filter(_byRooms).filter(_byGuests).filter(_byFeatures);
+    return arrData.filter(byType).filter(byPrice).filter(byRooms).filter(byGuests).filter(byFeatures);
   }
 
   filterFormElement.addEventListener('change', function(evt) {

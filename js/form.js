@@ -36,9 +36,6 @@
 
   function resetForm() {
     adFormElement.reset();
-    if (onAdFormElementReset) {
-      onAdFormElementReset();
-    }
   }
 
   function enableForm() {
