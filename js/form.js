@@ -104,9 +104,16 @@
     setDefaultAvatar();
   }
 
+  function avatarContainerRemoveEventListeners() {
+    avatarContainer.removeEventListener('mouseenter', onAvatarContainerMouseEnter);
+    avatarContainer.removeEventListener('mouseleave', onAvatarContainerMouseLeave);
+    avatarContainer.removeEventListener('click', onAvatarContainerClick);
+  }
+
   function setAvatar(file) {
     if (typeUploadFileIsImage(file)) {
       setDataUrl(previewAvatar, file);
+      avatarContainerRemoveEventListeners();
       avatarContainer.addEventListener('mouseenter', onAvatarContainerMouseEnter);
       avatarContainer.addEventListener('mouseleave', onAvatarContainerMouseLeave);
       avatarContainer.addEventListener('click', onAvatarContainerClick);
@@ -116,9 +123,7 @@
   }
 
   function setDefaultAvatar() {
-    avatarContainer.removeEventListener('mouseenter', onAvatarContainerMouseEnter);
-    avatarContainer.removeEventListener('mouseleave', onAvatarContainerMouseLeave);
-    avatarContainer.removeEventListener('click', onAvatarContainerClick);
+    avatarContainerRemoveEventListeners();
     previewAvatar.src = 'img/muffin-grey.svg';
     inputAvatar.value = '';
   }
