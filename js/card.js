@@ -2,6 +2,7 @@
 
 (function() {
   var cardTemplate = document.querySelector('#card').content.querySelector('.map__card');
+  var ESC_CODE = 27;
   var housingTypeToRusLang = {
     'bungalo': 'Бунгало',
     'flat': 'Квартира',
@@ -67,6 +68,14 @@
     })
   }
 
+  function onDocumentKeydown(evt) {
+    var cards = Array.from(document.querySelectorAll('.map__card'));
+    if (evt.keyCode === ESC_CODE && cards.length > 0) {
+      evt.preventDefault();
+      cards.pop().remove();
+    }
+  }
+
   function renderCard(info) { /* info - объект */
     var card = cardTemplate.cloneNode(true);
     var btnClose = card.querySelector('.popup__close');
@@ -95,6 +104,8 @@
       card.remove();
     })
   }
+
+  document.addEventListener('keydown', onDocumentKeydown);
 
   window.card = {
     render: renderCard,

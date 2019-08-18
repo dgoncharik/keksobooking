@@ -3,6 +3,10 @@
 (function() {
   var map = document.querySelector('.map');
   var mainPin = map.querySelector('.map__pin--main');
+  var mainPinDefaultPosition = {
+    x: mainPin.offsetLeft,
+    y: mainPin.offsetTop
+  };
   var MainPinSize = {
     WIDTH: 65,
     HEIGHT: 82
@@ -48,11 +52,15 @@
   }
 
   function deactivateMap() {
+    setMainPinDefaultPosition();
     map.classList.add(htmlClassMapDisable);
   }
 
-
-
+  function setMainPinDefaultPosition() {
+    mainPin.style.left = (mainPinDefaultPosition.x) + 'px';
+    mainPin.style.top = (mainPinDefaultPosition.y) + 'px'
+  }
+  
   function onMainPinMousedown(evt) {
     evt.preventDefault();
     mainPin.style.zIndex = '2';

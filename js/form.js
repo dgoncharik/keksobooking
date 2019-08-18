@@ -9,6 +9,8 @@
   var timeInElement = adFormElement.querySelector('#timein');
   var timeOutElement = adFormElement.querySelector('#timeout');
   var formElements = Array.from(adFormElement.querySelectorAll(['input', 'select', 'textarea', 'button', 'label']));
+  var roomNumberElement = adFormElement.querySelector('#room_number');
+  var capacityElement = adFormElement.querySelector('#capacity');
   var htmlClassDisabled = 'ad-form--disabled';
   var inputAvatar = adFormElement.querySelector('#avatar');
   var avatarContainer = adFormElement.querySelector('.ad-form-header__preview');
@@ -20,6 +22,12 @@
   var housingPhotos = [];
   var onAdFormElementSubmit = null;
   var onAdFormElementReset = null;
+
+  // ===================================
+
+  
+
+  // ===================================
 
   var housingTypeToPrice = {
     'bungalo': 0,
@@ -114,6 +122,13 @@
     }
   }
 
+  function onAvatarContainerClick(evt) {
+    evt.preventDefault();
+    if (isFormEnable()) {
+      setDefaultAvatar();
+    }
+  }
+
   function setAvatar(file) {
     if (typeUploadFileIsImage(file)) {
       avatarFile = file;
@@ -122,12 +137,10 @@
   }
 
   function setDefaultAvatar() {
-    if (isFormEnable()) {
-      avatarFile = null;
-      avatarContainer.classList.remove('ad-form-header__preview--delete');
-      previewAvatar.src = srcDefaultAvatar;
-      inputAvatar.value = '';
-    }
+    avatarFile = null;
+    avatarContainer.classList.remove('ad-form-header__preview--delete');
+    previewAvatar.src = srcDefaultAvatar;
+    inputAvatar.value = '';
   }
 
   function removeEmptyPreviews() {
@@ -236,7 +249,7 @@
 
   avatarContainer.addEventListener('mouseenter', onAvatarContainerMouseEnter);
   avatarContainer.addEventListener('mouseleave', onAvatarContainerMouseLeave);
-  avatarContainer.addEventListener('click', setDefaultAvatar);
+  avatarContainer.addEventListener('click', onAvatarContainerClick);
 
   inputHouseImages.addEventListener('change', function(evt) {
     evt.preventDefault();
@@ -257,12 +270,6 @@
       onAdFormElementSubmit(evt);
     }
   })
-
-  function initialization() {
-    setMinPrice(housingTypeToPrice[housTypeElement.value]);
-  }
-
-  initialization();
 
   window.form = {
     reset: resetForm,

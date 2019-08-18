@@ -1,6 +1,6 @@
 'use strict';
 (function() {
-  var MAX_PINS_ON_MAP; /* 5 */
+  var MAX_PINS_ON_MAP; /* 5 по заданию. Оставить undefined для отображения всех пинов.*/
   var FILTER_DEBOUNCE_INTERVALL = 500;
   var mainElement = document.querySelector('main');
 
@@ -39,6 +39,7 @@
     window.pins.removeAllFromDom();
     window.map.deactivate();
     window.filter.disable();
+    window.form.reset();
     setAddressToForm();
     window.form.disable();
   }
@@ -53,10 +54,9 @@
   }
 
   function formDataUploadDone(data) {
-    console.log('Upload done! \n', data);
+    console.log('Загруженные данные: \n', data);
     window.notification.success('Ваше объявление<br>успешно размещено!', mainElement);
-    window.form.reset();
-    window.form.enable();
+    deactivatePage();
   }
 
   function formDataUploadError(error) {
