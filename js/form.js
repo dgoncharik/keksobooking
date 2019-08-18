@@ -15,6 +15,8 @@
   var previewAvatar = avatarContainer.querySelector('img');
   var inputHouseImages = adFormElement.querySelector('#images');
   var housingPreviewContainer = adFormElement.querySelector('.ad-form__photo-container');
+  var avatarFile = null; /* null == default avatar */
+  var srcDefaultAvatar = 'img/muffin-grey.svg';
   var housingPhotos = [];
   var onAdFormElementSubmit = null;
   var onAdFormElementReset = null;
@@ -73,6 +75,9 @@
 
   function getFormData() {
     var formData = new FormData(adFormElement);
+    if (avatarFile){
+      formData.append('avatar', avatarFile);
+    }
     housingPhotos.forEach(photo => {
       formData.append('images', photo);
     })
@@ -91,41 +96,38 @@
     reader.readAsDataURL(uploadedFile);
   }
 
-  function onAvatarContainerMouseEnter() {
-    avatarContainer.classList.add('ad-form-header__preview--delete');
+  function isDefaultAvatar() {
+    return !avatarFile;
   }
 
-  function onAvatarContainerMouseLeave() {
-    avatarContainer.classList.remove('ad-form-header__preview--delete');
+  function onAvatarContainerMouseEnter(evt) {
+    evt.preventDefault();
+    if (!isDefaultAvatar() && isFormEnable()) {
+      avatarContainer.classList.add('ad-form-header__preview--delete');
+    }
   }
 
-  function onAvatarContainerClick() {
-    onAvatarContainerMouseLeave();
-    setDefaultAvatar();
-  }
-
-  function avatarContainerRemoveEventListeners() {
-    avatarContainer.removeEventListener('mouseenter', onAvatarContainerMouseEnter);
-    avatarContainer.removeEventListener('mouseleave', onAvatarContainerMouseLeave);
-    avatarContainer.removeEventListener('click', onAvatarContainerClick);
+  function onAvatarContainerMouseLeave(evt) {
+    evt.preventDefault();
+    if (isFormEnable()) {
+      avatarContainer.classList.remove('ad-form-header__preview--delete');
+    }
   }
 
   function setAvatar(file) {
     if (typeUploadFileIsImage(file)) {
-      setDataUrl(previewAvatar, file);
-      avatarContainerRemoveEventListeners();
-      avatarContainer.addEventListener('mouseenter', onAvatarContainerMouseEnter);
-      avatarContainer.addEventListener('mouseleave', onAvatarContainerMouseLeave);
-      avatarContainer.addEventListener('click', onAvatarContainerClick);
-    } else {
-      setDefaultAvatar();
+      avatarFile = file;
+      setDataUrl(previewAvatar, avatarFile);
     }
   }
 
   function setDefaultAvatar() {
-    avatarContainerRemoveEventListeners();
-    previewAvatar.src = 'img/muffin-grey.svg';
-    inputAvatar.value = '';
+    if (isFormEnable()) {
+      avatarFile = null;
+      avatarContainer.classList.remove('ad-form-header__preview--delete');
+      previewAvatar.src = srcDefaultAvatar;
+      inputAvatar.value = '';
+    }
   }
 
   function removeEmptyPreviews() {
@@ -167,17 +169,24 @@
       setDataUrl(img, file);
       preview.addEventListener('click', function() {
         var indexFile = housingPhotos.indexOf(preview.file);
-        if (indexFile != -1) {
+        if (isFormEnable() && indexFile != -1) {
           housingPhotos.splice(indexFile, 1);
           preview.remove();
           restoreEmptyPreview();
         }
       })
-      preview.addEventListener('mouseenter', function() {
-        preview.classList.add('ad-form__photo--delete')
+      preview.addEventListener('mouseenter', function(evt) {
+        evt.preventDefault();
+        if (isFormEnable()) {
+          preview.classList.add('ad-form__photo--delete');
+        }
+        
       })
-      preview.addEventListener('mouseleave', function() {
-        preview.classList.remove('ad-form__photo--delete')
+      preview.addEventListener('mouseleave', function(evt) {
+        evt.preventDefault();
+        if (isFormEnable()) {
+          preview.classList.remove('ad-form__photo--delete');
+        }
       })
       preview.appendChild(img);
     }
@@ -219,8 +228,15 @@
   inputAvatar.addEventListener('change', function(evt) {
     evt.preventDefault();
     var uploadedFile = inputAvatar.files[0];
-    setAvatar(uploadedFile);
+    if (uploadedFile) {
+      setAvatar(uploadedFile);
+    }
+    inputAvatar.value = '';
   })
+
+  avatarContainer.addEventListener('mouseenter', onAvatarContainerMouseEnter);
+  avatarContainer.addEventListener('mouseleave', onAvatarContainerMouseLeave);
+  avatarContainer.addEventListener('click', setDefaultAvatar);
 
   inputHouseImages.addEventListener('change', function(evt) {
     evt.preventDefault();
