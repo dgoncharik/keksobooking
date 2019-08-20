@@ -1,6 +1,6 @@
 'use strict';
 (function() {
-  var MAX_PINS_ON_MAP; /* 5 по заданию. Оставить undefined для отображения всех пинов.*/
+  var MAX_PINS_ON_MAP = 5; /* 5 по заданию. Оставить undefined для отображения всех пинов.*/
   var FILTER_DEBOUNCE_INTERVALL = 500;
   var mainElement = document.querySelector('main');
 

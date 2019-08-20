@@ -22,7 +22,7 @@
   var housingPhotos = [];
   var onAdFormElementSubmit = null;
   var onAdFormElementReset = null;
-  var MAX_ROOMS = 100;
+  var MIN_NUMBER_ROOMS_NOT_FOR_GUESTS = 100;
   var roomsToGuests = {
     '1': ['1'],
     '2': ['1', '2'],
@@ -73,19 +73,14 @@
     addressElement.value = coord.x + ', ' + coord.y;
   }
 
-  function setMinPrice(value) {
-    priceElement.min = value;
-    priceElement.placeholder = value;
+  function setMinPrice() {
+    var minPrice = housingTypeToPrice[housTypeElement.value];
+    priceElement.min = minPrice;
+    priceElement.placeholder = minPrice;
   }
 
   function setValueField(field, value) {
     field.value = value;
-  }
-
-  function checkCapacity() {
-    var rooms = roomNumberElement.value;
-    var guests = capacityElement.value;
-    return (rooms != MAX_ROOMS && rooms >= guests && guests != 0) || (rooms == MAX_ROOMS && guests == 0);
   }
 
   function disableBadGuestOptions() {
@@ -95,29 +90,25 @@
      })
    }
 
-   function getCapacityValidationMessage() {
+   function validateCapacity() {
     var message;
     var rooms = roomNumberElement.value;
     var guests = capacityElement.value;
     switch (true) {
-      case (checkCapacity()):
-        message = '';
-        break;
-      case (rooms > 3):
+      case (rooms >= MIN_NUMBER_ROOMS_NOT_FOR_GUESTS && guests > 0):
         message = 'Слишком много комнат для выбранного количества гостей ;)';
         break;
-      case (guests == 0):
+      case (rooms < MIN_NUMBER_ROOMS_NOT_FOR_GUESTS && guests < 1):
         message = 'Нужно выбрать количество гостей.'
         break;
-      case (rooms <= 3):
+      case (rooms < guests):
         message = 'Все гости не вместятся в выбранное количество комнат ;)'
         break;
+      default:
+        message = '';
+        break;
     }
-    return message;
-  }
-
-  function validateCapacity() {
-    capacityElement.setCustomValidity(getCapacityValidationMessage());
+    capacityElement.setCustomValidity(message);
   }
 
   function typeUploadFileIsImage(uploadedFile) {
@@ -259,19 +250,20 @@
     inputHouseImages.value = '';
   }
 
-  function onHousTypeElementClick(evt) {
-    setMinPrice(housingTypeToPrice[evt.target.value]);
-  }
-
-  function onTimeInElementChange() {
+  function onTimeInElementChange(evt) {
+    evt.preventDefault();
     setValueField(timeOutElement, timeInElement.value);
   }
 
-  function onTimeOutElementChange() {
+  function onTimeOutElementChange(evt) {
+    evt.preventDefault();
     setValueField(timeInElement, timeOutElement.value);
   }
 
-  housTypeElement.addEventListener('change', onHousTypeElementClick);
+  housTypeElement.addEventListener('change', function(evt) {
+    evt.preventDefault();
+    setMinPrice();
+  });
 
   timeInElement.addEventListener('change', onTimeInElementChange);
 
@@ -311,6 +303,7 @@
   adFormElement.addEventListener('reset', function() {
     setDefaultAvatar();
     clearHousingPhotos();
+    setTimeout(setMinPrice, 0);
     if (onAdFormElementReset) {
       setTimeout(onAdFormElementReset, 0);
     }
@@ -324,7 +317,7 @@
 
   function initialization() {
     disableBadGuestOptions();
-    checkCapacity();
+    validateCapacity();
   }
 
   initialization();
