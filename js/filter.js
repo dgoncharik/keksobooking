@@ -81,7 +81,7 @@
 
   function clearFilter() {
     filterItemsElements.forEach(element => {
-      if (element.tagName === 'SELECT') {
+      if (element.nodeName === 'SELECT') {
         element.value = 'any';
       }
       if (element.id === 'housing-features') {

@@ -76,21 +76,39 @@
     }
   }
 
+  function getEndingRooms(numberRooms) {
+    var ending = '';
+    var endNumberOfRooms = window.utils.getEndNumber(numberRooms);
+    if (endNumberOfRooms === 1) {
+      ending = 'а';
+    } else if (endNumberOfRooms > 1 && numberRooms < 5) {
+      ending = 'ы'
+    }
+    return ending;
+  }
+
+  function getEndingGuests(numberGuests) {
+    var endNumberOfGuests = window.utils.getEndNumber(numberGuests);
+    return endNumberOfGuests > 1 || numberGuests === 0 ? 'ей' : 'я';
+  }
+
   function renderCard(info) { /* info - объект */
     var card = cardTemplate.cloneNode(true);
     var btnClose = card.querySelector('.popup__close');
+    var author = info.author;
+    var offer = info.offer;
     removeFeaturesElements(card);
-    insertFeaturesElements(card, info.offer.features);
+    insertFeaturesElements(card, offer.features);
     removePhotos(card);
-    insertPhotos(card, info.offer.photos);
-    card.querySelector('.popup__avatar').src = info.author.avatar;
-    card.querySelector('.popup__title').textContent = info.offer.title;
-    card.querySelector('.popup__text--address').textContent = info.offer.address;
-    card.querySelector('.popup__text--price').textContent = info.offer.price + '₽/ночь';
-    card.querySelector('.popup__type').textContent = housingTypeToRusLang[info.offer.type];
-    card.querySelector('.popup__text--capacity').textContent = info.offer.rooms + ' комнаты для ' + info.offer.guests + ' гостей';
-    card.querySelector('.popup__text--time').textContent = 'Заезд после ' + info.offer.checkin + ', выезд до ' + info.offer.checkout;
-    card.querySelector('.popup__description').textContent = info.offer.description;
+    insertPhotos(card, offer.photos);
+    card.querySelector('.popup__avatar').src = author.avatar;
+    card.querySelector('.popup__title').textContent = offer.title;
+    card.querySelector('.popup__text--address').textContent = offer.address;
+    card.querySelector('.popup__text--price').textContent = offer.price + '₽/ночь';
+    card.querySelector('.popup__type').textContent = housingTypeToRusLang[offer.type];
+    card.querySelector('.popup__text--capacity').textContent = offer.rooms + ' комнат' +  getEndingRooms(offer.rooms) + ' для ' + offer.guests + ' гост' + getEndingGuests(offer.guests);
+    card.querySelector('.popup__text--time').textContent = 'Заезд после ' + offer.checkin + ', выезд до ' + offer.checkout;
+    card.querySelector('.popup__description').textContent = offer.description;
     btnClose.addEventListener('click', function(evt) {
       evt.preventDefault();
       card.remove();

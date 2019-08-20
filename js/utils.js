@@ -20,9 +20,15 @@
     return result;
   }
 
+  function getEndNumber(number) {
+    var str = String(number);
+    return Number(str[str.length - 1]);
+  }
+
   window.utils = {
     getRandomInteger: getRandomInteger,
     getRandomElement: getRandomElement,
-    addZeros: addZeros
+    addZeros: addZeros,
+    getEndNumber: getEndNumber
   }
 }())

@@ -17,17 +17,18 @@
   var previewAvatar = avatarContainer.querySelector('img');
   var inputHouseImages = adFormElement.querySelector('#images');
   var housingPreviewContainer = adFormElement.querySelector('.ad-form__photo-container');
-  var avatarFile = null; /* null == default avatar */
+  var avatarFile = null; /* null - стандартный аватар */
   var srcDefaultAvatar = 'img/muffin-grey.svg';
   var housingPhotos = [];
   var onAdFormElementSubmit = null;
   var onAdFormElementReset = null;
-
-  // ===================================
-
-  
-
-  // ===================================
+  var MAX_ROOMS = 100;
+  var roomsToGuests = {
+    '1': ['1'],
+    '2': ['1', '2'],
+    '3': ['1', '2', '3'],
+    '100': ['0']
+  };
 
   var housingTypeToPrice = {
     'bungalo': 0,
@@ -81,15 +82,42 @@
     field.value = value;
   }
 
-  function getFormData() {
-    var formData = new FormData(adFormElement);
-    if (avatarFile){
-      formData.append('avatar', avatarFile);
+  function checkCapacity() {
+    var rooms = roomNumberElement.value;
+    var guests = capacityElement.value;
+    return (rooms != MAX_ROOMS && rooms >= guests && guests != 0) || (rooms == MAX_ROOMS && guests == 0);
+  }
+
+  function disableBadGuestOptions() {
+    [].forEach.call(capacityElement.options, capacityOption => {
+       var badOption = roomsToGuests[roomNumberElement.value].indexOf(capacityOption.value) == -1;
+       badOption ? capacityOption.disabled = true : capacityOption.disabled = false;
+     })
+   }
+
+   function getCapacityValidationMessage() {
+    var message;
+    var rooms = roomNumberElement.value;
+    var guests = capacityElement.value;
+    switch (true) {
+      case (checkCapacity()):
+        message = '';
+        break;
+      case (rooms > 3):
+        message = 'Слишком много комнат для выбранного количества гостей ;)';
+        break;
+      case (guests == 0):
+        message = 'Нужно выбрать количество гостей.'
+        break;
+      case (rooms <= 3):
+        message = 'Все гости не вместятся в выбранное количество комнат ;)'
+        break;
     }
-    housingPhotos.forEach(photo => {
-      formData.append('images', photo);
-    })
-    return formData;
+    return message;
+  }
+
+  function validateCapacity() {
+    capacityElement.setCustomValidity(getCapacityValidationMessage());
   }
 
   function typeUploadFileIsImage(uploadedFile) {
@@ -106,6 +134,17 @@
 
   function isDefaultAvatar() {
     return !avatarFile;
+  }
+
+  function getFormData() {
+    var formData = new FormData(adFormElement);
+    if (avatarFile){
+      formData.append('avatar', avatarFile);
+    }
+    housingPhotos.forEach(photo => {
+      formData.append('images', photo);
+    })
+    return formData;
   }
 
   function onAvatarContainerMouseEnter(evt) {
@@ -238,6 +277,18 @@
 
   timeOutElement.addEventListener('change', onTimeOutElementChange);
 
+  roomNumberElement.addEventListener('change', function(evt) {
+    evt.preventDefault();
+    disableBadGuestOptions()
+    validateCapacity();
+  })
+
+  capacityElement.addEventListener('change', function(evt) {
+    evt.preventDefault();
+    disableBadGuestOptions()
+    validateCapacity();
+  })
+
   inputAvatar.addEventListener('change', function(evt) {
     evt.preventDefault();
     var uploadedFile = inputAvatar.files[0];
@@ -270,6 +321,13 @@
       onAdFormElementSubmit(evt);
     }
   })
+
+  function initialization() {
+    disableBadGuestOptions();
+    checkCapacity();
+  }
+
+  initialization();
 
   window.form = {
     reset: resetForm,
