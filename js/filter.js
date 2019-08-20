@@ -9,14 +9,14 @@
   var filterGuestsElement = filterFormElement.querySelector('#housing-guests');
   var filterCheckboxElementList = Array.from(filterFormElement.querySelectorAll('input[type="checkbox"'));
   var data = [];
-  var filterChangeCallbak;
+  var filterCallbak;
 
   function refreshData(newData) {
     data = newData;
   }
 
-  function setFilterChangeCallback(fn) {
-    filterChangeCallbak = fn;
+  function setFilterCallback(fn) {
+    filterCallbak = fn;
   }
 
   function getGroupPrice(price) {
@@ -74,8 +74,8 @@
 
   filterFormElement.addEventListener('change', function(evt) {
     evt.preventDefault();
-    if (filterChangeCallbak) {
-      filterChangeCallbak(filtration(data));
+    if (filterCallbak) {
+      filterCallbak(filtration(data));
     }
   })
 
@@ -111,6 +111,6 @@
     enable: enableFilter,
     disable: disableFilter,
     refreshData: refreshData,
-    setChangeCallback: setFilterChangeCallback
+    setCallback: setFilterCallback
   }
 }())

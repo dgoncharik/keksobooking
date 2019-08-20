@@ -75,7 +75,7 @@
   window.map.setMouseUpCallback(setAddressToForm);
   window.form.setResetCallback(setAddressToForm);
   window.form.setSubmitCallback(formSubmitCallback);
-  window.filter.setChangeCallback(window.debounce(insertPinsInDom, FILTER_DEBOUNCE_INTERVALL));
+  window.filter.setCallback(window.debounce(insertPinsInDom, FILTER_DEBOUNCE_INTERVALL));
 
   deactivatePage();
 }())
